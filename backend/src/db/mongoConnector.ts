@@ -4,7 +4,7 @@ import exerciseSchema from './models/exerciseSchema.js';
 import sentenceSchema from './models/sentenceSchema.js';
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/exsdb', {})
+  .connect('mongodb+srv://admin:admin@cluster0.t1gaslr.mongodb.net/', {})
   .then(() => {
     console.log('DataBase is Connected');
   })
