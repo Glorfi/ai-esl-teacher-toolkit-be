@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import userSchema from './models/userSchema.js';
 import exerciseSchema from './models/exerciseSchema.js';
 import sentenceSchema from './models/sentenceSchema.js';
+dotenv.config();
 mongoose
-    .connect('mongodb+srv://admin:admin@cluster0.t1gaslr.mongodb.net/', {})
+    .connect(process.env.MONGO_LINK || "", {})
     .then(() => {
     console.log('DataBase is Connected');
 })
