@@ -1,4 +1,4 @@
-import './index.css'
+import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
@@ -12,7 +12,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename={isProduction ? '/ai-exercises-generator/' : '/'}>
+    {/* <BrowserRouter basename={isProduction ? '/ai-exercises-generator/' : '/'}> */}
+    <BrowserRouter>
       <Provider store={store}>
         <ChakraProvider theme={theme}>
           <UserContextProvider>
