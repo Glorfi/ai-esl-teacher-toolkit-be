@@ -15,6 +15,7 @@
     "add-build": "git add build",
     "dev": "npx nodemon",
     "start": "npm run build && node build/index",
+    "ts.check": "tsc --project tsconfig.json",
     "lint": "npx eslint ./src",
     "format": "npx eslint ./src --fix"
   },
@@ -48,6 +49,7 @@
     "pre-commit": "^1.2.2"
   },
   "pre-commit": [
+    "ts.check",
     "build",
     "add-build"
   ]
