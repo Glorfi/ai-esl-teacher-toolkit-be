@@ -14,7 +14,7 @@ import React from 'react';
 import { APP_PATHS } from '../constants/AppPaths';
 import { HamburgerIcon } from '@chakra-ui/icons';
 
-export const MobileMenu = (): JSX.Element => {
+export const MobileMenuMain = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

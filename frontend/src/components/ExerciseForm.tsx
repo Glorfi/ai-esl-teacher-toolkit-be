@@ -11,6 +11,7 @@ import {
   VStack,
   Select,
   Tooltip,
+  Textarea,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useCompleteChatMutation } from '../store/gpt-api/gpt.api';
@@ -37,9 +38,10 @@ function ExerciseForm() {
     skill: '',
     taskType: '',
     wordList: '',
-    learnerLevel: '', // LEARNER_LEVEL.B1,
-    learnerAge: '', // LEARNER_AGE.adults,
+    learnerLevel: LEARNER_LEVEL.B1,
+    learnerAge: LEARNER_AGE.adults,
   });
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [parsedData, setParsedData] = useState<ISentence[] | null>(null);
   const [isCreated, setIsFetched] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -70,6 +72,19 @@ function ExerciseForm() {
     formValues.learnerLevel,
     formValues.learnerAge
   );
+
+  const checkFormValidity = () => {
+    for (const key in formValues) {
+      if (
+        formValues.hasOwnProperty(key) &&
+        formValues[key as keyof IFormValues] === ''
+      ) {
+        setIsFormValid(false);
+        return;
+      }
+    }
+    setIsFormValid(true);
+  };
 
   useEffect(() => {
     console.log(prompt);
@@ -115,11 +130,16 @@ function ExerciseForm() {
     setParsedData(null);
   }, []);
 
+  useEffect(() => {
+    checkFormValidity();
+  }, [formValues]);
+
   return (
     <Card bgColor={'background'}>
       <CardBody display="flex" gap={'8px'} flexDirection={'column'}>
         <Text fontSize={'lg'}>Choose the skill:</Text>
         <RadioGroup
+          colorScheme={'secondary'}
           name="skill"
           value={formValues.skill}
           onChange={(value) => setFormValues({ ...formValues, skill: value })}
@@ -137,6 +157,7 @@ function ExerciseForm() {
         <Text fontSize={'lg'}>Type of exercise</Text>
         <RadioGroup
           name="task-type"
+          colorScheme={'secondary'}
           value={formValues.taskType}
           onChange={(value) =>
             setFormValues({ ...formValues, taskType: value })
@@ -154,9 +175,8 @@ function ExerciseForm() {
           <Text fontSize={'lg'}>Words to practice</Text>
           <Text fontSize={'2xs'}>type words separeted by comas</Text>
         </VStack>
-        <Input
-          type="text"
-          colorScheme="telegram"
+        <Textarea
+          colorScheme="secondary"
           onChange={(e) =>
             setFormValues({ ...formValues, wordList: e.target.value })
           }
@@ -196,10 +216,11 @@ function ExerciseForm() {
         >
           <Button
             variant={'outline'}
-            colorScheme={'telegram'}
+            colorScheme={'secondary'}
             onClick={handleSendMessage}
             isLoading={isLoading}
             loadingText={'Generating...'}
+            isDisabled={!isFormValid}
           >
             Generate the exericse!
           </Button>

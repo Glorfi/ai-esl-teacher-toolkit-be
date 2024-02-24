@@ -17,7 +17,6 @@ import { ISentence } from '../../interfaces/sentence-with-input';
 import { useCompleteChatMutation } from '../../store/gpt-api/gpt.api';
 import { RootState } from '../../store/store';
 import { APP_PATHS } from '../../constants/AppPaths';
-import { MobileMenu } from '../../components/MobileMenu';
 import { Header } from '../../components/Header';
 
 export const MainPage = (): JSX.Element => {

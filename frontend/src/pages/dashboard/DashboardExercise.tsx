@@ -13,6 +13,7 @@ import { useGetExerciseByIdQuery } from '../../store/main-api/queries/getExercis
 import { LSHandler } from '../../utils/handleLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { MobileMenuDashBoard } from '../../components/MobileMenuDashboard';
 
 export const DashboardExercisePage = (): JSX.Element => {
   const { id } = useParams();
@@ -49,11 +50,14 @@ export const DashboardExercisePage = (): JSX.Element => {
       <HStack alignItems={'flex-start'}>
         <SideBarMenu />
         <HStack
+          flexDirection={['column', 'row']}
           minH={'100vh'}
-          alignItems={'center'}
+          alignItems={['flex-start', 'center']}
           w={'100%'}
-          justifyContent={'center'}
+          justifyContent={['flex-start', 'center']}
+          padding={['20px', '0']}
         >
+          <MobileMenuDashBoard />
           {isNotFound ? (
             <Text>Ooops! Seems The exercise isn't found</Text>
           ) : null}

@@ -8,7 +8,7 @@ import {
   useConst,
 } from '@chakra-ui/react';
 import { APP_PATHS } from '../constants/AppPaths';
-import { MobileMenu } from './MobileMenu';
+import { MobileMenuMain } from './MobileMenuMain';
 import { useContext } from 'react';
 import { UserContext } from '../contexts/UserContext';
 
@@ -50,7 +50,7 @@ export const Header = (): JSX.Element => {
           Profile
         </ChakraLink>
       </ButtonGroup>
-      <MobileMenu />
+      <MobileMenuMain />
       {!userData ? (
         <ButtonGroup alignItems={'center'}>
           <ChakraLink
