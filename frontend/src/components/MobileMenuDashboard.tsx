@@ -30,6 +30,7 @@ import { ExerciseThumbnail } from './SideBarExerciseThumbnail';
 export const MobileMenuDashBoard = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const jwt = LSHandler.getJwt();
+  const vh = window.innerHeight * 0.01;
 
   const [userData, setUserData] = useContext(UserContext);
   const newExList = useSelector((state: RootState) => state.exerciseList);
@@ -70,13 +71,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
             width={'100%'}
             padding={0}
           >
-            <VStack
-              minH={
-                'calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom))'
-              }
-              w={'100%'}
-              pb={'20px'}
-            >
+            <VStack minH={`calc(${vh}px * 100)`} w={'100%'} pb={'20px'}>
               <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
                 <Button
                   w={'100%'}
