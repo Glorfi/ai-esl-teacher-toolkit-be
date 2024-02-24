@@ -18,6 +18,7 @@ import { useCompleteChatMutation } from '../../store/gpt-api/gpt.api';
 import { RootState } from '../../store/store';
 import { APP_PATHS } from '../../constants/AppPaths';
 import { Header } from '../../components/Header';
+import { MobileMenuDashBoard } from '../../components/MobileMenuDashboard';
 
 export const MainPage = (): JSX.Element => {
   const [sendMessage, { isSuccess, isLoading, data }] = useCompleteChatMutation(

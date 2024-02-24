@@ -58,7 +58,6 @@ export const MobileMenuDashBoard = (): JSX.Element => {
       </Box>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size={'full'}>
         <DrawerOverlay />
-
         <DrawerContent bgColor={'primary'} padding={'0 20px'}>
           <DrawerHeader>
             <DrawerCloseButton color={'white'} right={'28px'} />
@@ -70,7 +69,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
             width={'100%'}
             padding={0}
           >
-            <VStack w={'100%'} minH={'calc(100vh - 30px)'} pb={'20px'}>
+            <VStack w={'100%'} minH={'calc(100% - 50px)'} pb={'20px'}>
               <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
                 <Button
                   w={'100%'}
@@ -122,7 +121,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
                   color={'background'}
                   fontWeight={'semibold'}
                 >
-                  {userData?.email}
+                  {userData?.email || 'fasdfasdf'}
                 </Text>
               </HStack>
             </VStack>
