@@ -29,8 +29,6 @@ import { ExerciseThumbnail } from './SideBarExerciseThumbnail';
 
 export const MobileMenuDashBoard = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const jwt = LSHandler.getJwt();
-  const vh = window.innerHeight * 0.01;
 
   const [userData, setUserData] = useContext(UserContext);
   const newExList = useSelector((state: RootState) => state.exerciseList);
@@ -61,15 +59,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size={'full'}>
         <DrawerOverlay />
 
-        <DrawerContent
-          bgColor={'primary'}
-          padding={'0 20px'}
-          minH={`calc(var(--vh, 1vh) * 100)`}
-          style={{
-            // @ts-ignore
-            '--vh': `${vh}px`,
-          }}
-        >
+        <DrawerContent bgColor={'primary'} padding={'0 20px'}>
           <DrawerHeader>
             <DrawerCloseButton color={'white'} right={'28px'} />
           </DrawerHeader>
@@ -80,7 +70,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
             width={'100%'}
             padding={0}
           >
-            <VStack w={'100%'} h={'100%'} pb={'20px'}>
+            <VStack w={'100%'} minH={'calc(100vh - 30px)'} pb={'20px'}>
               <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
                 <Button
                   w={'100%'}
