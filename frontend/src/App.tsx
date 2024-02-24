@@ -17,7 +17,7 @@ import { LSHandler } from './utils/handleLocalStorage';
 import { APP_PATHS } from './constants/AppPaths';
 import { useDispatch } from 'react-redux';
 import { addExerciseList } from './store/exerciseList/exercise-list-router';
-import { MainPage } from './pages/main/MainPage';
+import { Spinner, VStack, Text } from '@chakra-ui/react';
 
 function App() {
   const [user, setUserData] = useContext(UserContext);
@@ -34,7 +34,19 @@ function App() {
   }, [data]);
 
   if (isLoading) {
-    return <></>;
+    return (
+      <VStack minH={'100vh'}>
+        <Spinner
+          thickness="4px"
+          size={'xl'}
+          speed="0.8s"
+          emptyColor="gray.200"
+          color={'secondary.base'}
+          m={'0 auto'}
+        />
+        <Text>Loading...</Text>
+      </VStack>
+    );
   }
 
   return (
@@ -45,10 +57,8 @@ function App() {
           path={route.path}
           element={
             route.protected && !data ? (
-              // Если пользователь не залогинен и маршрут защищенный, перенаправляем на страницу входа
               <Navigate to={APP_PATHS.SIGN_IN} replace />
             ) : (
-              // Иначе, рендерим соответствующий элемент маршрута
               <route.element />
             )
           }
