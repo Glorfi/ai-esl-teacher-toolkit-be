@@ -18,6 +18,7 @@ import { useCompleteChatMutation } from '../../store/gpt-api/gpt.api';
 import { RootState } from '../../store/store';
 import { APP_PATHS } from '../../constants/AppPaths';
 import { MobileMenu } from '../../components/MobileMenu';
+import { Header } from '../../components/Header';
 
 export const MainPage = (): JSX.Element => {
   const [sendMessage, { isSuccess, isLoading, data }] = useCompleteChatMutation(
@@ -54,10 +55,6 @@ export const MainPage = (): JSX.Element => {
     }
   }, [isSuccess]);
 
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
-
   return (
     <VStack
       minHeight={'100vh'}
@@ -65,63 +62,7 @@ export const MainPage = (): JSX.Element => {
       maxW={'800px'}
       padding={['0 20px', '0 20px', '0 20px', '0']}
     >
-      <HStack
-        justifyContent={'space-between'}
-        w={'100%'}
-        margin={'16px 0 0 0'}
-        color={'highlight.base'}
-      >
-        <ButtonGroup display={['none', 'inline-flex']}>
-          <ChakraLink
-            as={ReactRouterLink}
-            to={APP_PATHS.MAIN}
-            color={'secondary.base'}
-            border={'1px solid transparent'}
-            _hover={{ textDecoration: 'none', borderBottom: '1px solid' }}
-          >
-            Home
-          </ChakraLink>
-          <ChakraLink
-            as={ReactRouterLink}
-            to={APP_PATHS.DASHBOARD}
-            color={'secondary.base'}
-            border={'1px solid transparent'}
-            _hover={{ textDecoration: 'none', borderBottom: '1px solid' }}
-          >
-            Dashboard
-          </ChakraLink>
-          <ChakraLink
-            as={ReactRouterLink}
-            to={'#'}
-            color={'secondary.base'}
-            border={'1px solid transparent'}
-            _hover={{ textDecoration: 'none', borderBottom: '1px solid' }}
-          >
-            Profile
-          </ChakraLink>
-        </ButtonGroup>
-        <MobileMenu />
-        <ButtonGroup alignItems={'center'}>
-          <ChakraLink
-            as={ReactRouterLink}
-            to={APP_PATHS.SIGN_IN}
-            color={'secondary.base'}
-            border={'1px solid transparent'}
-            _hover={{ textDecoration: 'none', borderBottom: '1px solid' }}
-          >
-            Sign In
-          </ChakraLink>
-          <ChakraLink as={ReactRouterLink} to={APP_PATHS.SIGN_UP}>
-            <Button
-              variant={'ghost'}
-              colorScheme="secondary"
-              borderRadius={'40px'}
-            >
-              SIGN UP
-            </Button>
-          </ChakraLink>
-        </ButtonGroup>
-      </HStack>
+      <Header />
       <VStack
         gap={0}
         justifyContent={'flex-start'}

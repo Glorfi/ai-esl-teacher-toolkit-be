@@ -1,4 +1,4 @@
-import circle from '../../assets/signin-elipse.svg'
+import circle from '../../assets/signin-elipse.svg';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -131,17 +131,11 @@ export const SignInPage = (): JSX.Element => {
     }
   }, [isSuccess]);
 
-  // useEffect(() => {
-  //   if (usData) {
-  //     setUserData(usData);
-  //   }
-  // }, [usData]);
-
-  // useEffect(() => {
-  //   if (userData) {
-  //     navigate(APP_PATHS.DASHBOARD);
-  //   }
-  // }, [userData]);
+  useEffect(() => {
+    if (userData) {
+      navigate(APP_PATHS.DASHBOARD);
+    }
+  }, [userData]);
 
   return (
     <Stack minH={'100vh'} alignItems={'center'} justifyContent={'center'}>
@@ -151,12 +145,7 @@ export const SignInPage = (): JSX.Element => {
         bgColor={'background'}
         position={'relative'}
       >
-        <Image
-          src={circle}
-          maxW={'233px'}
-          zIndex={'0'}
-          position={'absolute'}
-        />
+        <Image src={circle} maxW={'233px'} zIndex={'0'} position={'absolute'} />
         <CardBody position={'relative'}>
           <Text
             color={'primary'}

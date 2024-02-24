@@ -21,10 +21,11 @@ import {
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { Link as ChakraLink } from '@chakra-ui/react';
 import { APP_PATHS } from '../../constants/AppPaths';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { customError } from '../../interfaces/customError';
 import { useSignUpMutation } from '../../store/main-api/mutations/signup';
+import { UserContext } from '../../contexts/UserContext';
 
 interface ISignUPForm {
   email: string;
@@ -39,6 +40,7 @@ interface IFormValid {
 }
 
 export const SignUpPage = (): JSX.Element => {
+  const [userData, setUserData] = useContext(UserContext);
   const [formValues, setFormValues] = useState<ISignUPForm>({
     email: '',
     password: '',
@@ -131,6 +133,12 @@ export const SignUpPage = (): JSX.Element => {
         })
       : setIsFormValid({ ...isFormValid, arePasswordsEquals: null });
   }, [debounceConfirmPassword]);
+
+  useEffect(() => {
+    if (userData) {
+      navigate(APP_PATHS.DASHBOARD);
+    }
+  }, [userData]);
 
   return (
     <Stack minH={'100vh'} alignItems={'center'} justifyContent={'center'}>

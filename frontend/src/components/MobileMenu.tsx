@@ -1,14 +1,11 @@
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
-  Button,
-  Input,
   IconButton,
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
@@ -19,7 +16,6 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 
 export const MobileMenu = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
 
   return (
     <>
@@ -42,7 +38,6 @@ export const MobileMenu = (): JSX.Element => {
           <DrawerBody
             display="flex"
             flexDirection={'column'}
-            // justifyContent={'space-evenly'}
             alignItems={'center'}
             gap={'16px'}
             padding={'8px 24px 24px'}
