@@ -35,7 +35,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <VStack minH={'100vh'}>
+      <VStack minH={'100vh'} justifyContent={'center'}>
         <Spinner
           thickness="4px"
           size={'xl'}
