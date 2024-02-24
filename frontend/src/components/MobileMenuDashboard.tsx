@@ -72,7 +72,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
           >
             <VStack
               minH={
-                'calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom)'
+                'calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom))'
               }
               w={'100%'}
               pb={'20px'}
