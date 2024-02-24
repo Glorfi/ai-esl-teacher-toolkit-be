@@ -60,10 +60,15 @@ export const MobileMenuDashBoard = (): JSX.Element => {
       </Box>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size={'full'}>
         <DrawerOverlay />
+
         <DrawerContent
           bgColor={'primary'}
           padding={'0 20px'}
-          minH={`calc(${vh}px * 100)`}
+          minH={`calc(var(--vh, 1vh) * 100)`}
+          style={{
+            // @ts-ignore
+            '--vh': `${vh}px`,
+          }}
         >
           <DrawerHeader>
             <DrawerCloseButton color={'white'} right={'28px'} />
