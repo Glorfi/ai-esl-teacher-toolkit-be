@@ -21,11 +21,17 @@ export const DashboardExercisePage = (): JSX.Element => {
 
   const [ex, setEx] = useState<IExercise | null | undefined>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(true);
+
   const exerciseList = useSelector((state: RootState) => state.exerciseList);
 
   const [_, { data: deletedEx }] = useDeleteExerciseMutation({
     fixedCacheKey: 'deleteEx',
   });
+
+  function toggleSideBar() {
+    setIsSideBarOpen(!isSideBarOpen);
+  }
 
   useEffect(() => {
     if (deletedEx?._id === id) {
@@ -48,12 +54,13 @@ export const DashboardExercisePage = (): JSX.Element => {
   return (
     <Box minH={'100vh'}>
       <HStack alignItems={'flex-start'}>
-        <SideBarMenu />
+        <SideBarMenu isOpen={isSideBarOpen} onToggle={toggleSideBar} />
         <HStack
+          marginLeft={'auto'}
           flexDirection={['column', 'row']}
           minH={'100vh'}
           alignItems={['flex-start', 'center']}
-          w={'100%'}
+          w={isSideBarOpen ? 'calc(100% - 320px)' : '100%'}
           justifyContent={['flex-start', 'center']}
           padding={['20px', '0']}
         >

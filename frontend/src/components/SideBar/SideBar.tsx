@@ -14,26 +14,22 @@ import { PiNotePencil } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 import { ExerciseThumbnail } from '../SideBarExerciseThumbnail';
 import { UserContext } from '../../contexts/UserContext';
-import {
-  useGetExercisesQuery,
-  useLazyGetExercisesQuery,
-} from '../../store/main-api/queries/getExercises';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { APP_PATHS } from '../../constants/AppPaths';
 import { LSHandler } from '../../utils/handleLocalStorage';
-import { useDeleteExerciseMutation } from '../../store/main-api/mutations/deleteExercise';
 import { IExercise } from '../../interfaces/exercise';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useDispatch } from 'react-redux';
-import {
-  addExerciseList,
-  removeExercise,
-} from '../../store/exerciseList/exercise-list-router';
 
-export const SideBarMenu = (): JSX.Element => {
+interface ISideBarMenuProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   const jwt = LSHandler.getJwt();
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle } = props;
   const [userData, setUserData] = useContext(UserContext);
   const newExList = useSelector((state: RootState) => state.exerciseList);
   const dispatch = useDispatch();
@@ -49,16 +45,16 @@ export const SideBarMenu = (): JSX.Element => {
   }, [newExList]);
 
   return (
-    <HStack gap={0} display={['none', 'flex']}>
+    <HStack gap={0} display={['none', 'flex']} position={'fixed'}>
       <Box
         minH={'100vh'}
+        height={'100%'}
         bgColor={'primary'}
-        position={'relative'}
         className={`sliderMenu ${
-          !isOpen ? 'sliderMenu_isOpened' : 'sliderMenu_isClosed'
+          isOpen ? 'sliderMenu_isOpened' : 'sliderMenu_isClosed'
         }`}
       >
-        {!isOpen ? (
+        {isOpen ? (
           <VStack p={'20px'} minH={'100vh'}>
             <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
               <Button
