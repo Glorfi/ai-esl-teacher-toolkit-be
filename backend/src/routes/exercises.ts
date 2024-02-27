@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createExercise,
   deleteExercise,
+  generateExercise,
   getExerciseByID,
   getUserExercises,
 } from '../controllers/exercises.js';
@@ -12,6 +13,7 @@ const exsRouter = express.Router();
 exsRouter.get('/:id', getExerciseByID)
 exsRouter.get('/', auth, getUserExercises);
 exsRouter.post('/', auth, createExercise);
+exsRouter.post('/generate', auth, generateExercise);
 exsRouter.delete('/:id', auth, deleteExercise);
 
 export default exsRouter;

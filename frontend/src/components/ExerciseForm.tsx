@@ -24,6 +24,7 @@ import { useCreateExerciseMutation } from '../store/main-api/mutations/createExe
 import { LSHandler } from '../utils/handleLocalStorage';
 import { UserContext } from '../contexts/UserContext';
 import { addExercise } from '../store/exerciseList/exercise-list-router';
+import { useGenerateExerciseMutation } from '../store/main-api/mutations/generateExercise';
 
 interface IFormValues {
   skill: 'grammar' | 'vocabulary' | string;
@@ -34,6 +35,7 @@ interface IFormValues {
 }
 
 function ExerciseForm() {
+  const token = LSHandler.getJwt();
   const [formValues, setFormValues] = useState<IFormValues>({
     skill: '',
     taskType: '',
@@ -42,28 +44,21 @@ function ExerciseForm() {
     learnerAge: LEARNER_AGE.adults,
   });
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
-  const [parsedData, setParsedData] = useState<ISentence[] | null>(null);
-  const [isCreated, setIsFetched] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const token = LSHandler.getJwt();
 
-  const [sendMessage, { isLoading, isSuccess, data }] = useCompleteChatMutation(
-    {
-      fixedCacheKey: 'shared-AI-answer',
-    }
-  );
-  const [
-    createExercise,
-    {
-      isLoading: isCreatingLoading,
-      isSuccess: isCreatingSuccess,
-      data: createdExercise,
-    },
-  ] = useCreateExerciseMutation();
+  const [generateExercise, { isLoading, error, data: createdExercise }] =
+    useGenerateExerciseMutation();
 
   function handleSendMessage() {
     dispatch(addValues(formValues));
-    sendMessage({ content: prompt });
+    generateExercise({
+      token,
+      body: {
+        type: formValues.taskType,
+        skill: formValues.skill,
+        prompt: prompt,
+      },
+    });
   }
   const prompt = useGeneratePrompt(
     formValues.skill,
@@ -91,48 +86,20 @@ function ExerciseForm() {
   }, [prompt, formValues]);
 
   useEffect(() => {
-    if (isSuccess && data && !parsedData) {
-      setParsedData(JSON.parse(data.choices[0].message.content));
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (parsedData) {
-      console.log(parsedData);
-      const isSetnteceListValid = parsedData.every((item) =>
-        item.sentence.includes(item.answer)
-      );
-      console.log(isSetnteceListValid);
-      if (!isSetnteceListValid) {
-        handleSendMessage();
-        setParsedData(null);
-      } else {
-        createExercise({
-          token,
-          body: {
-            sentenceList: parsedData,
-            skill: formValues.skill,
-            type: formValues.taskType,
-          },
-        });
-      }
-    }
-  }, [parsedData]);
-
-  useEffect(() => {
     if (createdExercise) {
       dispatch(addExercise(createdExercise));
     }
   }, [createdExercise]);
 
   useEffect(() => {
-    // Сброс parsedData при монтировании компонента
-    setParsedData(null);
-  }, []);
-
-  useEffect(() => {
     checkFormValidity();
   }, [formValues]);
+
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <Card bgColor={'background'}>

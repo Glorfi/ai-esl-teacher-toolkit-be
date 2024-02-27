@@ -4,7 +4,7 @@ interface ISentence extends Document {
   answer: string;
   hint?: string;
   options?: string[];
-  exercise: Types.ObjectId | string;
+  exercise?: Types.ObjectId | string;
 }
 
 export default ISentence;
