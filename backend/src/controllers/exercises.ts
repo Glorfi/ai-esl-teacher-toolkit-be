@@ -3,9 +3,11 @@ import { IRequest } from '../interfaces/requests/IRequest.js';
 import { Exercises, Sentences, Users } from '../db/mongoConnector.js';
 import IExercise from '../interfaces/IExerciseSchema.js';
 import ISentence from '../interfaces/ISentence.js';
-import IUser from '../interfaces/IUserSchema.js';
 import { NotFound } from '../errors/NotFound.js';
-import { any } from 'joi';
+import { OPEN_AI_BASE_URL } from '../constants/openAI.js';
+import { IGptResponse } from '../interfaces/responses/gpt-api.js';
+import { openAIRequest } from '../utils/openAIrequest.js';
+import { GenerationFailed } from '../errors/GenerationFailed.js';
 
 export const getUserExercises = (
   req: IRequest,
@@ -75,6 +77,80 @@ export const createExercise = (
         );
     })
     .catch((err) => next(err));
+};
+
+export const generateExercise = (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id: owner } = req.user;
+  const { prompt, skill, type } = req.body;
+  openAIRequest(prompt)
+    .then((sentenceList: ISentence[]) => {
+      if (!Array.isArray(sentenceList)) {
+        throw new GenerationFailed('AI returned non-array data structure');
+      }
+      const isSentenceListValid = sentenceList.every((item) =>
+        item.sentence.includes(item.answer)
+      );
+      if (!isSentenceListValid) {
+        throw new GenerationFailed('AI returned wrong data structure');
+      }
+      Exercises.create({ owner, skill, type }).then((ex: any) => {
+        Users.findById(owner)
+          .then((user: any | null) => {
+            if (!user) {
+              throw new NotFound("User's not found");
+            }
+            user.exercises?.push(ex._id);
+            return user.save();
+          })
+          .catch((err) => next(err));
+        const sentencePromises = sentenceList.map((item: ISentence) => {
+          const exId = ex._id;
+          const { sentence, answer, hint, options } = item;
+          return Sentences.create({
+            sentence,
+            answer,
+            hint,
+            options,
+            exercise: exId,
+          });
+        });
+        return Promise.all(sentencePromises)
+          .then((sentences) => {
+            ex.sentenceList = sentences.map((sentence) => sentence._id);
+            return ex.save();
+          })
+          .then(() =>
+            ex.populate('sentenceList').then((newEx: any) => res.send(newEx))
+          );
+      });
+    })
+    .catch((err) => next(err));
+
+  // fetch(OPEN_AI_BASE_URL, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer ${process.env.OPEN_AI_KEY}`,
+  //   },
+  //   body: JSON.stringify({
+  //     model: 'gpt-3.5-turbo',
+  //     messages: [{ role: 'user', content: prompt }],
+  //     temperature: 1,
+  //     max_tokens: 500,
+  //   }),
+  // })
+  //   .then((gptData) => gptData.json())
+  //   .then((gptRes: IGptResponse) => {
+  //     const gptMessageString = gptRes.choices[0].message.content;
+  //     return gptMessageString;
+  //   })
+  //   .catch((err) => {
+  //     next(err);
+  //   });
 };
 
 export const deleteExercise = (

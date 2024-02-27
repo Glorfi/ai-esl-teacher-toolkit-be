@@ -19,3 +19,9 @@ export interface IExerciseCreate {
   skill: string;
   sentenceList: ISentence[];
 }
+
+export interface IExerciseGenerate {
+  type: string;
+  skill: string;
+  prompt: string;
+}

@@ -8,4 +8,5 @@ export const API_PATH = {
   SIGN_IN: '/auth/signin',
   CURRENT_USER: '/users/me',
   EXERCISES: '/exercises',
+  EXERCISES_GENERATE: '/exercises/generate',
 };
