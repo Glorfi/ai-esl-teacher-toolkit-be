@@ -3,4 +3,5 @@ export interface ISentence {
   answer: string;
   hint?: string;
   options?: string[];
+  _id: 'string';
 }

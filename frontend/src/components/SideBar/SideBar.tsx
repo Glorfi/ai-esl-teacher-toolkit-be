@@ -9,7 +9,7 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { PiNotePencil } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 import { ExerciseThumbnail } from '../SideBarExerciseThumbnail';
@@ -34,14 +34,13 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   const newExList = useSelector((state: RootState) => state.exerciseList);
   const dispatch = useDispatch();
 
-  const [exercisesToDisplay, setExercisesToDisplay] = useState<IExercise[]>([]);
-
-  useEffect(() => {
+  const exercisesToDisplay: IExercise[] = useMemo(() => {
     const exsSorted = [...newExList].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
-    setExercisesToDisplay(exsSorted);
+    console.log('Sorting');
+    return exsSorted;
   }, [newExList]);
 
   return (
