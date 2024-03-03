@@ -62,6 +62,7 @@ export const DashboardExercisePage = (): JSX.Element => {
     <Box minH={'100vh'}>
       <HStack alignItems={'flex-start'}>
         <SideBarMenu isOpen={isSideBarOpen} onToggle={toggleSideBar} />
+        <MobileMenuDashBoard />
         <HStack
           marginLeft={'auto'}
           flexDirection={['column', 'row']}
@@ -92,15 +93,20 @@ export const DashboardExercisePage = (): JSX.Element => {
                   <Text>Ooops! Seems The exercise isn't found</Text>
                 ) : null}
                 {ex?.type === 'fillInGaps' ? (
-                  <ExerciseSentenceInput sentenceList={ex.sentenceList} />
+                  <ExerciseSentenceInput
+                    sentenceList={ex.sentenceList}
+                    taskDescription={ex.taskDescription}
+                  />
                 ) : null}
                 {ex?.type === 'multipleChoice' ? (
-                  <ExerciseSelectInput sentenceList={ex.sentenceList} />
+                  <ExerciseSelectInput
+                    sentenceList={ex.sentenceList}
+                    taskDescription={ex.taskDescription}
+                  />
                 ) : null}
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <MobileMenuDashBoard />
         </HStack>
       </HStack>
     </Box>

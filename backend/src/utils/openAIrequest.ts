@@ -14,7 +14,7 @@ export const openAIRequest = (prompt: string) => {
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       temperature: 1,
-      max_tokens: 500,
+      max_tokens: 4000,
     }),
   })
     .then((gptData) => gptData.json())

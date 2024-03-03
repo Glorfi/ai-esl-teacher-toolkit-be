@@ -28,7 +28,7 @@ export const DeleteExercisePopUp = (
   const { isOpen, onOpen, onClose, id } = props;
 
   const jwt = LSHandler.getJwt();
-  const [deleteExercise, { data }] = useDeleteExerciseMutation({
+  const [deleteExercise, { data, isLoading }] = useDeleteExerciseMutation({
     fixedCacheKey: 'deleteEx',
   });
   const dispatch = useDispatch();
@@ -56,7 +56,13 @@ export const DeleteExercisePopUp = (
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="error" mr={3} onClick={handleDeleteExercise}>
+          <Button
+            colorScheme="error"
+            mr={3}
+            onClick={handleDeleteExercise}
+            isLoading={isLoading}
+            loadingText={'Deleting...'}
+          >
             Delete
           </Button>
           <Button variant="ghost" onClick={onClose} colorScheme="secondary">

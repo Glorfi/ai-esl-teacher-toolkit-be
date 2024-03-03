@@ -5,9 +5,14 @@ import {
   CardFooter,
   ButtonGroup,
   Input,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
 } from '@chakra-ui/react';
 import { IExercise } from '../interfaces/exercise';
 import { SentenceEditForm } from './SentenceEditForm';
+import { useEffect, useState } from 'react';
 
 interface IExerciseEditForm {
   exercise: IExercise;
@@ -15,24 +20,35 @@ interface IExerciseEditForm {
 
 export const ExerciseEditForm = (props: IExerciseEditForm) => {
   const { exercise } = props;
+  const [exData, setExData] = useState<IExercise>(exercise);
+
+  useEffect(() => {
+    setExData(exercise);
+  }, [exercise]);
 
   return (
     <Card>
       <CardHeader p={'20px 20px 0'}>
-        <Input
-          type="text"
-          color={'primary'}
+        <Editable
+          key={`${exData._id}_title`}
+          defaultValue={exData.title ? exData.title : 'Enter the task title'}
           fontWeight={'bold'}
-          variant={'unstyled'}
-          placeholder="Enter the title of your exercise"
-        />
-        <Input
-          type="text"
+          fontSize={'x-large'}
           color={'primary'}
+        >
+          <EditablePreview />
+          <EditableInput _focusVisible={{ style: { boxShadow: 'none' } }} />
+        </Editable>
+        <Editable
+          defaultValue="Enter the task description"
+          fontSize={'16px'}
           fontWeight={'bold'}
-          variant={'unstyled'}
-          placeholder="Enter the task Description"
-        />
+          color={'primary'}
+          key={`${exData._id}_description`}
+        >
+          <EditablePreview />
+          <EditableInput _focusVisible={{ style: { boxShadow: 'none' } }} />
+        </Editable>
       </CardHeader>
       <CardBody display={'flex'} flexDirection={'column'}>
         {exercise.sentenceList.map((item, index) => {

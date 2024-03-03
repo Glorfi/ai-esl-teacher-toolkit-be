@@ -39,7 +39,7 @@ export const SentenceInput = (props: ISentenceInputProps) => {
     <>
       {parts.map((part, index) => (
         <React.Fragment key={`fragment${index}`}>
-          <Text display={'inline-block'} mr={'1ch'} key={`sentence${index}`}>
+          <Text display={'inline'} mr={'1ch'} key={`sentence${index}`}>
             {part}
           </Text>
           {index < parts.length - 1 && (

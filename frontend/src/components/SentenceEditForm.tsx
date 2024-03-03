@@ -9,6 +9,7 @@ import {
   SlideFade,
   FormControl,
   FormLabel,
+  Box,
 } from '@chakra-ui/react';
 import { ISentence } from '../interfaces/sentence-with-input';
 import { GrEdit } from 'react-icons/gr';
@@ -41,16 +42,22 @@ export const SentenceEditForm = (
           variant={'unstyled'}
           onClick={isFormOpen.onToggle}
         />
-        <Text>{sentence.sentence}</Text>
+        <Text fontWeight={isFormOpen.isOpen ? 'bold' : 400}>
+          {sentence.sentence}
+        </Text>
       </HStack>
       <SlideFade in={isFormOpen.isOpen}>
         <VStack
           display={isFormOpen.isOpen ? 'flex' : 'none'}
-          paddingLeft={'calc(24px + 0.5rem)'}
+          alignItems={'flex-start'}
+          marginLeft={'calc(24px + 0.5rem)'}
+          padding={'8px'}
+          border={'2px solid'}
+          borderColor={'highlight.base'}
+          borderRadius={'8px'}
         >
-          {' '}
-          <FormControl>
-            <FormLabel>Sentence</FormLabel>
+          <Box w={'100%'}>
+            <Text>Sentence</Text>
             <Input
               type="text"
               placeholder="sentence"
@@ -59,40 +66,44 @@ export const SentenceEditForm = (
               size={'sm'}
               borderRadius={'40px'}
             />
-            <FormLabel>Hint</FormLabel>
-            <Input
-              type="text"
-              placeholder="hint"
-              defaultValue={sentence.hint}
-              size={'sm'}
-              w={'min-content'}
-              borderRadius={'40px'}
-            />
-            <FormLabel>Answer</FormLabel>
-            <Input
-              type="text"
-              placeholder="answer"
-              defaultValue={sentence.answer}
-              size={'sm'}
-              w={'min-content'}
-              borderRadius={'40px'}
-            />
-          </FormControl>
-          <ButtonGroup justifyContent={"center"}>
-            <FormLabel>Options</FormLabel>
-            {sentence.options?.map((option, index) => {
-              return (
-                <Input
-                  type="text"
-                  size={'sm'}
-                  borderRadius={'40px'}
-                  placeholder="option"
-                  defaultValue={option}
-                  key={`${option}option${index}`}
-                />
-              );
-            })}
-          </ButtonGroup>
+          </Box>
+          <VStack alignItems={'flex-start'}>
+            <HStack>
+              <Text>Hint</Text>
+              <Input
+                type="text"
+                placeholder="hint"
+                defaultValue={sentence.hint}
+                size={'sm'}
+                w={'min-content'}
+                borderRadius={'40px'}
+              />
+              <Text>Answer</Text>
+              <Input
+                type="text"
+                placeholder="answer"
+                defaultValue={sentence.answer}
+                size={'sm'}
+                w={'min-content'}
+                borderRadius={'40px'}
+              />
+            </HStack>
+            <ButtonGroup justifyContent={'center'} alignItems={'center'}>
+              <Text>Options</Text>
+              {sentence.options?.map((option, index) => {
+                return (
+                  <Input
+                    type="text"
+                    size={'sm'}
+                    borderRadius={'40px'}
+                    placeholder="option"
+                    defaultValue={option}
+                    key={`${option}option${index}`}
+                  />
+                );
+              })}
+            </ButtonGroup>
+          </VStack>
         </VStack>
       </SlideFade>
     </>

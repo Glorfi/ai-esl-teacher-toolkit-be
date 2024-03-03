@@ -46,6 +46,7 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   return (
     <HStack gap={0} display={['none', 'flex']} position={'fixed'}>
       <Box
+        display={['none', 'flex']}
         minH={'100vh'}
         height={'100%'}
         bgColor={'primary'}

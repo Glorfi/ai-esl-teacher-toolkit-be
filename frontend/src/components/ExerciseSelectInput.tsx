@@ -25,6 +25,7 @@ import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 
 interface IExerciseSelectInput {
   sentenceList: ISentence[];
+  taskDescription: string | undefined;
 }
 
 export const ExerciseSelectInput = (props: IExerciseSelectInput) => {
@@ -70,10 +71,10 @@ export const ExerciseSelectInput = (props: IExerciseSelectInput) => {
   }, []);
 
   return (
-    <Card>
+    <Card w={'100%'}>
       <CardHeader p={'20px 20px 0'}>
         <Text color={'primary'} fontWeight={'bold'}>
-          Choose the correct option to complete the sentences
+          {props.taskDescription ? props.taskDescription : 'No description'}
         </Text>
       </CardHeader>
       <CardBody display={'flex'} flexDirection={'column'} gap={'16px'}>

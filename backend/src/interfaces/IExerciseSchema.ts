@@ -11,6 +11,7 @@ interface IExercise extends Document {
   taskDescription?: string;
   studentLevel?: string;
   studentAge?: number;
+  isRandomOrderEnabled?: boolean;
 }
 
 export default IExercise;

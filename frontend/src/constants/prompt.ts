@@ -11,12 +11,12 @@ export const VOCABULARY_WORKSHEET_TYPE = {
   [ {"sentence": "your sentence generated here",
    "answer":  "the form of the word or the phrase in your sentence",
    "hint":  "the base form of the word or the phrase",
-"options": "is the array of strings with options for mutliple choise, options should contain the correct answer and 2 wrong but similar in meaning but incompatible words"}]`,
+"options": "is the array of strings with options for mutliple choise, options should contain the correct answer from the answer field and 2 wrong but similar in meaning but incompatible words"}]`,
   multipleChoice: `In your reply write nothing else but JSON:
   [ {"sentence": "your sentence generated here",
    "answer":  "the form of the word or the phrase in your sentence",
    "hint":  "the base form of the word or the phrase",
-"options": "is the array of strings with options for mutliple choise, options should contain the correct answer and 2 wrong but similar in meaning but incompatible words"}]`,
+"options": "is the array of strings with options for mutliple choise, options should contain the correct answer from the answer field and 2 wrong but similar in meaning but incompatible words"}]`,
 };
 
 // export const VOCABULARY_WORKSHEET_TYPE = {

@@ -20,7 +20,7 @@ export const DashboardPage = (): JSX.Element => {
           flexDirection={['column', 'column']}
           minH={'100vh'}
           alignItems={['flex-start', 'center']}
-          w={isSideBarOpen ? 'calc(100% - 320px)' : '100%'}
+          w={['100%', `${isSideBarOpen ? 'calc(100% - 320px)' : '100%'}`]}
           justifyContent={['flex-start', 'center']}
           padding={['20px', '0']}
         >
