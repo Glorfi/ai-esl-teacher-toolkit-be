@@ -5,6 +5,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { IExercise } from '../../interfaces/exercise';
+import { ISentence } from '../../interfaces/sentence-with-input';
 
 const initialState: IExercise[] = [];
 
@@ -29,6 +30,35 @@ const addExerciseAction = (
   return [...state, action.payload];
 };
 
+const updateExerciseAction = (
+  state: IExercise[],
+  action: PayloadAction<IExercise>
+) => {
+  const index = state.findIndex(
+    (exercise) => exercise._id === action.payload._id
+  );
+  if (index !== -1) {
+    state[index] = action.payload;
+  }
+  return state;
+};
+
+const replaceSentenceAction = (
+  state: IExercise[],
+  action: PayloadAction<ISentence>
+) => {
+  const exIndex = state.findIndex(
+    (exercise) => exercise._id === action.payload.exercise
+  );
+  if (exIndex !== -1) {
+    const sentenceIndex = state[exIndex].sentenceList.findIndex(
+      (sentence) => sentence._id === action.payload._id
+    );
+    state[exIndex].sentenceList[sentenceIndex] = action.payload;
+  }
+  return state;
+};
+
 export const exerciseListRouter = createSlice({
   name: 'exerciseList',
   initialState,
@@ -36,8 +66,15 @@ export const exerciseListRouter = createSlice({
     addExerciseList: addExerciseListAction,
     removeExercise: removeExerciseAction,
     addExercise: addExerciseAction,
+    replaceExercise: updateExerciseAction,
+    replaceSentence: replaceSentenceAction,
   },
 });
 
-export const { addExerciseList, removeExercise, addExercise } =
-  exerciseListRouter.actions;
+export const {
+  addExerciseList,
+  removeExercise,
+  addExercise,
+  replaceExercise,
+  replaceSentence,
+} = exerciseListRouter.actions;

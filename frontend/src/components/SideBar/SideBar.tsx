@@ -55,7 +55,7 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
         }`}
       >
         {isOpen ? (
-          <VStack p={'20px'} minH={'100vh'}>
+          <VStack p={'20px'} minH={'100vh'} w={'100%'}>
             <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
               <Button
                 w={'100%'}

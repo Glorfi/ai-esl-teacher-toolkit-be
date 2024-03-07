@@ -62,31 +62,34 @@ export const DashboardExercisePage = (): JSX.Element => {
     <Box minH={'100vh'}>
       <HStack alignItems={'flex-start'}>
         <SideBarMenu isOpen={isSideBarOpen} onToggle={toggleSideBar} />
-        <MobileMenuDashBoard />
+
         <HStack
           marginLeft={'auto'}
-          flexDirection={['column', 'row']}
+          flexDirection={['column', 'column']}
           minH={'100vh'}
-          alignItems={['flex-start']}
-          w={isSideBarOpen ? 'calc(100% - 320px)' : '100%'}
+          alignItems={['flex-start', 'center']}
+          w={['100%', `${isSideBarOpen ? 'calc(100% - 320px)' : '100%'}`]}
           justifyContent={['flex-start', 'center']}
           padding={['20px', '0']}
         >
+          <MobileMenuDashBoard />
           <Tabs
             mt={'40px'}
             isFitted
             variant="enclosed"
             size="md"
-            minW={'600px'}
+            minW={['unset', '600px']}
             colorScheme="secondary"
           >
             <TabList>
               <Tab>Edit</Tab>
               <Tab>Preview</Tab>
             </TabList>
-            <TabPanels w={'100%'} minW={'600px'} maxW={'600px'}>
+            <TabPanels w={'100%'} minW={['unset', '600px']} maxW={['unset', '600px']}>
               <TabPanel p={0} borderTop={'none'}>
-                {ex ? <ExerciseEditForm exercise={ex} /> : null}
+                {ex ? (
+                  <ExerciseEditForm exercise={ex} key={`${ex._id}_editForm`} />
+                ) : null}
               </TabPanel>
               <TabPanel p={0} borderTop={'none'}>
                 {isNotFound ? (
