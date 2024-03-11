@@ -47,6 +47,11 @@ const exerciseSchema = new mongoose.Schema<IExercise>({
     type: Number,
     required: false,
   },
+  isRandomOrderEnabled: {
+    type: Boolean,
+    required: false,
+    default: true
+  }
 });
 
 export default exerciseSchema;

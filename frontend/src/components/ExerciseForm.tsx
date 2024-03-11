@@ -12,6 +12,7 @@ import {
   Select,
   Tooltip,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useCompleteChatMutation } from '../store/gpt-api/gpt.api';
@@ -21,10 +22,13 @@ import { useDispatch } from 'react-redux';
 import { addValues } from '../store/exercise-form/exercise-form-router';
 import { ISentence } from '../interfaces/sentence-with-input';
 import { useCreateExerciseMutation } from '../store/main-api/mutations/createExercise';
+import { customError } from '../interfaces/customError';
 import { LSHandler } from '../utils/handleLocalStorage';
 import { UserContext } from '../contexts/UserContext';
 import { addExercise } from '../store/exerciseList/exercise-list-router';
 import { useGenerateExerciseMutation } from '../store/main-api/mutations/generateExercise';
+import { useNavigate } from 'react-router-dom';
+import { APP_PATHS } from '../constants/AppPaths';
 
 interface IFormValues {
   skill: 'grammar' | 'vocabulary' | string;
@@ -44,7 +48,9 @@ function ExerciseForm() {
     learnerAge: LEARNER_AGE.adults,
   });
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const [generateExercise, { isLoading, error, data: createdExercise }] =
     useGenerateExerciseMutation();
@@ -88,6 +94,11 @@ function ExerciseForm() {
   useEffect(() => {
     if (createdExercise) {
       dispatch(addExercise(createdExercise));
+      navigate(
+        `${APP_PATHS.DASHBOARD_EXERCISE.replace(':id', '')}${
+          createdExercise._id
+        }`
+      );
     }
   }, [createdExercise]);
 
@@ -97,7 +108,14 @@ function ExerciseForm() {
 
   useEffect(() => {
     if (error) {
-      console.log(error);
+      const customError = error as customError;
+      const { code, message } = customError.data;
+      toast({
+        title: message,
+        status: 'error',
+        isClosable: true,
+        position: 'top-right',
+      });
     }
   }, [error]);
 

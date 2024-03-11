@@ -44,6 +44,11 @@ const exerciseSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    isRandomOrderEnabled: {
+        type: Boolean,
+        required: false,
+        default: true
+    }
 });
 export default exerciseSchema;
 //# sourceMappingURL=exerciseSchema.js.map

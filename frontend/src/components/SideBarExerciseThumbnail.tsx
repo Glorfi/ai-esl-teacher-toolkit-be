@@ -1,25 +1,7 @@
-import {
-  HStack,
-  VStack,
-  IconButton,
-  Text,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  Button,
-} from '@chakra-ui/react';
-import { HiDotsHorizontal } from 'react-icons/hi';
+import { HStack, VStack, Text } from '@chakra-ui/react';
 import { IExercise } from '../interfaces/exercise';
-import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { APP_PATHS } from '../constants/AppPaths';
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { ExThumbnailButton } from './ExThumbNailButton';
 import { ExThumbnailMenu } from './ExThumbnailMenu';
 
 interface IExerciseThumbnailProps {
@@ -62,17 +44,29 @@ export const ExerciseThumbnail = (
     >
       <VStack>
         <HStack width={'100%'}>
-          <Text fontSize={'12px'} color={'background'} fontWeight={'light'}>
-            Keywords:
-          </Text>
-          <Text
-            fontSize={'12px'}
-            color={'background'}
-            fontWeight={'semibold'}
-            noOfLines={1}
-          >
-            {keywords.join(', ')}
-          </Text>
+          {data.title ? (
+            <Text
+              fontSize={'12px'}
+              color={'background'}
+              fontWeight={'semibold'}
+            >
+              {data.title}
+            </Text>
+          ) : (
+            <>
+              <Text fontSize={'12px'} color={'background'} fontWeight={'light'}>
+                Keywords:
+              </Text>
+              <Text
+                fontSize={'12px'}
+                color={'background'}
+                fontWeight={'semibold'}
+                noOfLines={1}
+              >
+                {keywords.join(', ')}
+              </Text>
+            </>
+          )}
         </HStack>
         <HStack w={'100%'}>
           <Text fontSize={'12px'} color={'background'} fontWeight={'light'}>

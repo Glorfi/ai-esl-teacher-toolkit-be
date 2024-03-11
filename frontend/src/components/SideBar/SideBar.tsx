@@ -9,7 +9,7 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { PiNotePencil } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 import { ExerciseThumbnail } from '../SideBarExerciseThumbnail';
@@ -34,19 +34,19 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   const newExList = useSelector((state: RootState) => state.exerciseList);
   const dispatch = useDispatch();
 
-  const [exercisesToDisplay, setExercisesToDisplay] = useState<IExercise[]>([]);
-
-  useEffect(() => {
+  const exercisesToDisplay: IExercise[] = useMemo(() => {
     const exsSorted = [...newExList].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
-    setExercisesToDisplay(exsSorted);
+    console.log('Sorting');
+    return exsSorted;
   }, [newExList]);
 
   return (
     <HStack gap={0} display={['none', 'flex']} position={'fixed'}>
       <Box
+        display={['none', 'flex']}
         minH={'100vh'}
         height={'100%'}
         bgColor={'primary'}
@@ -55,7 +55,7 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
         }`}
       >
         {isOpen ? (
-          <VStack p={'20px'} minH={'100vh'}>
+          <VStack p={'20px'} minH={'100vh'} w={'100%'}>
             <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>
               <Button
                 w={'100%'}

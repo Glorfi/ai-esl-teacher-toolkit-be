@@ -25,6 +25,7 @@ import { shuffleArray } from '../utils/shuffleArray';
 
 interface IExerciseSentenceInput {
   sentenceList: ISentence[];
+  taskDescription: string | undefined;
 }
 
 export const ExerciseSentenceInput = (props: IExerciseSentenceInput) => {
@@ -66,10 +67,10 @@ export const ExerciseSentenceInput = (props: IExerciseSentenceInput) => {
   }, [validAnswersList]);
 
   return (
-    <Card>
+    <Card w={'100%'} maxW={"800px"}>
       <CardHeader p={'20px 20px 0'}>
         <Text color={'primary'} fontWeight={'bold'}>
-          Fill the gaps with the correct word from the box
+          {props.taskDescription ? props.taskDescription : 'No description'}
         </Text>
         <Box
           w={'100%'}

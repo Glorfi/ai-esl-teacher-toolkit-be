@@ -1,13 +1,17 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import userSchema from './models/userSchema.js';
 import exerciseSchema from './models/exerciseSchema.js';
 import sentenceSchema from './models/sentenceSchema.js';
 
-dotenv.config()
+dotenv.config();
+const currentDb =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGO_LINK
+    : 'mongodb://127.0.0.1:27017/exsdb';
 
 mongoose
-  .connect(process.env.MONGO_LINK || "", {})
+  .connect(currentDb || '', {})
   .then(() => {
     console.log('DataBase is Connected');
   })
@@ -16,8 +20,8 @@ mongoose
   });
 
 const db = mongoose.connection;
-db.on('error', () => {
-  console.error('Failed to connect to DB');
+db.on('error', (err) => {
+  console.error(err);
 });
 
 const Users = mongoose.model('users', userSchema);

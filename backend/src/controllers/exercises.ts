@@ -8,6 +8,7 @@ import { OPEN_AI_BASE_URL } from '../constants/openAI.js';
 import { IGptResponse } from '../interfaces/responses/gpt-api.js';
 import { openAIRequest } from '../utils/openAIrequest.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
+import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
 
 export const getUserExercises = (
   req: IRequest,
@@ -86,18 +87,35 @@ export const generateExercise = (
 ) => {
   const { _id: owner } = req.user;
   const { prompt, skill, type } = req.body;
+  let taskDescription: string;
   openAIRequest(prompt)
     .then((sentenceList: ISentence[]) => {
       if (!Array.isArray(sentenceList)) {
         throw new GenerationFailed('AI returned non-array data structure');
       }
-      const isSentenceListValid = sentenceList.every((item) =>
+      const isSentenceIncludeAnswer = sentenceList.every((item) =>
         item.sentence.includes(item.answer)
       );
-      if (!isSentenceListValid) {
-        throw new GenerationFailed('AI returned wrong data structure');
+      const areOptionsIncludeAnswer = sentenceList.every((item) =>
+        item.options?.includes(item.answer)
+      );
+      if (!isSentenceIncludeAnswer) {
+        throw new GenerationFailed(
+          'AI returned wrong data structure: missing answer in the sentence'
+        );
       }
-      Exercises.create({ owner, skill, type }).then((ex: any) => {
+      if (!areOptionsIncludeAnswer) {
+        throw new GenerationFailed(
+          'AI returned wrong data structure: missing answer in the options'
+        );
+      }
+      if (type === 'multipleChoice') {
+        taskDescription = 'Choose the correct option to complete the sentences';
+      }
+      if (type === 'fillInGaps') {
+        taskDescription = 'Fill the gaps with the correct word';
+      }
+      Exercises.create({ owner, skill, type, taskDescription }).then((ex: any) => {
         Users.findById(owner)
           .then((user: any | null) => {
             if (!user) {
@@ -186,5 +204,37 @@ export const deleteExercise = (
       res.send(removedEx);
       return user.save();
     })
+    .catch((err) => next(err));
+};
+
+export const updateExercise = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { title, taskDescription } = req.body;
+  const { _id: user } = req.user;
+  Exercises.findById(req.params.id)
+    .then((ex: IExercise | null) => {
+      if (!ex) {
+        throw new NotFound('Exercise not found');
+      }
+      if (ex.owner.toString() !== user) {
+        throw new UnauthorizedAccess(
+          'The user tries to update someone else exercise'
+        );
+      }
+      if (title) {
+        ex.title = title;
+      }
+      if (taskDescription) {
+        ex.taskDescription = taskDescription;
+      }
+      ex.updatedAt = new Date();
+      return ex.save();
+    })
+    .then((updatedEx) =>
+      updatedEx.populate('sentenceList').then((newEx: any) => res.send(newEx))
+    )
     .catch((err) => next(err));
 };
