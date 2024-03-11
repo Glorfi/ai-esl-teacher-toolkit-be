@@ -24,14 +24,7 @@ export const MainPage = (): JSX.Element => {
   const [sendMessage, { isSuccess, isLoading, data }] = useCompleteChatMutation(
     { fixedCacheKey: 'shared-AI-answer' }
   );
-  const [parsedData, setParsedData] = useState<ISentence[]>([
-    {
-      sentence: '',
-      answer: '',
-      hint: '',
-      options: [],
-    },
-  ]);
+
 
   const formData = useSelector((state: RootState) => state.exerciseForm);
 
@@ -49,11 +42,11 @@ export const MainPage = (): JSX.Element => {
     });
   }
 
-  useEffect(() => {
-    if (isSuccess && data) {
-      setParsedData(JSON.parse(data.choices[0].message.content));
-    }
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess && data) {
+  //     setParsedData(JSON.parse(data.choices[0].message.content));
+  //   }
+  // }, [isSuccess]);
 
   return (
     <VStack
@@ -83,12 +76,12 @@ export const MainPage = (): JSX.Element => {
           ESL Teacher ToolKit
         </Text>
       </VStack>
-      {isSuccess && parsedData && formData.taskType === 'fillInGaps' ? (
+      {/* {isSuccess && parsedData && formData.taskType === 'fillInGaps' ? (
         <ExerciseSentenceInput sentenceList={parsedData} />
       ) : null}
       {isSuccess && parsedData && formData.taskType === 'multipleChoice' ? (
         <ExerciseSelectInput sentenceList={parsedData} />
-      ) : null}
+      ) : null} */}
       {/* <ExerciseSentenceInput sentenceList={sampleData2} />
       <ExerciseSelectInput sentenceList={sampleDataSelect}/> */}
     </VStack>

@@ -2,6 +2,7 @@ import { Exercises, Sentences, Users } from '../db/mongoConnector.js';
 import { NotFound } from '../errors/NotFound.js';
 import { openAIRequest } from '../utils/openAIrequest.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
+import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
 export const getUserExercises = (req, res, next) => {
     const { _id } = req.user;
     Exercises.find({ owner: _id })
@@ -58,16 +59,27 @@ export const createExercise = (req, res, next) => {
 export const generateExercise = (req, res, next) => {
     const { _id: owner } = req.user;
     const { prompt, skill, type } = req.body;
+    let taskDescription;
     openAIRequest(prompt)
         .then((sentenceList) => {
         if (!Array.isArray(sentenceList)) {
             throw new GenerationFailed('AI returned non-array data structure');
         }
-        const isSentenceListValid = sentenceList.every((item) => item.sentence.includes(item.answer));
-        if (!isSentenceListValid) {
-            throw new GenerationFailed('AI returned wrong data structure');
+        const isSentenceIncludeAnswer = sentenceList.every((item) => item.sentence.includes(item.answer));
+        const areOptionsIncludeAnswer = sentenceList.every((item) => item.options?.includes(item.answer));
+        if (!isSentenceIncludeAnswer) {
+            throw new GenerationFailed('AI returned wrong data structure: missing answer in the sentence');
         }
-        Exercises.create({ owner, skill, type }).then((ex) => {
+        if (!areOptionsIncludeAnswer) {
+            throw new GenerationFailed('AI returned wrong data structure: missing answer in the options');
+        }
+        if (type === 'multipleChoice') {
+            taskDescription = 'Choose the correct option to complete the sentences';
+        }
+        if (type === 'fillInGaps') {
+            taskDescription = 'Fill the gaps with the correct word';
+        }
+        Exercises.create({ owner, skill, type, taskDescription }).then((ex) => {
             Users.findById(owner)
                 .then((user) => {
                 if (!user) {
@@ -145,6 +157,29 @@ export const deleteExercise = (req, res, next) => {
         res.send(removedEx);
         return user.save();
     })
+        .catch((err) => next(err));
+};
+export const updateExercise = (req, res, next) => {
+    const { title, taskDescription } = req.body;
+    const { _id: user } = req.user;
+    Exercises.findById(req.params.id)
+        .then((ex) => {
+        if (!ex) {
+            throw new NotFound('Exercise not found');
+        }
+        if (ex.owner.toString() !== user) {
+            throw new UnauthorizedAccess('The user tries to update someone else exercise');
+        }
+        if (title) {
+            ex.title = title;
+        }
+        if (taskDescription) {
+            ex.taskDescription = taskDescription;
+        }
+        ex.updatedAt = new Date();
+        return ex.save();
+    })
+        .then((updatedEx) => updatedEx.populate('sentenceList').then((newEx) => res.send(newEx)))
         .catch((err) => next(err));
 };
 //# sourceMappingURL=exercises.js.map
