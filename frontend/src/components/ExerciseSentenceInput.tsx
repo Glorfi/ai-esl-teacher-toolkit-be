@@ -67,7 +67,7 @@ export const ExerciseSentenceInput = (props: IExerciseSentenceInput) => {
   }, [validAnswersList]);
 
   return (
-    <Card w={'100%'}>
+    <Card w={'100%'} maxW={"800px"}>
       <CardHeader p={'20px 20px 0'}>
         <Text color={'primary'} fontWeight={'bold'}>
           {props.taskDescription ? props.taskDescription : 'No description'}

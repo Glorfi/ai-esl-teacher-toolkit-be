@@ -17,7 +17,10 @@ import { useDebounce } from '../utils/useDebounce';
 import { useUpdateSentenceMutation } from '../store/main-api/mutations/updateSentence';
 import { LSHandler } from '../utils/handleLocalStorage';
 import { useDispatch } from 'react-redux';
-import { replaceSentence } from '../store/exerciseList/exercise-list-router';
+import {
+  replaceSentence,
+  updateTimeStampById,
+} from '../store/exerciseList/exercise-list-router';
 import validator from 'validator';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -83,8 +86,9 @@ export const SentenceEditForm = (
   }, [debounceForm]);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.exercise) {
       dispatch(replaceSentence(data));
+      dispatch(updateTimeStampById(data.exercise));
     }
   }, [data]);
 

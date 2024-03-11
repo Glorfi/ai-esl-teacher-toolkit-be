@@ -42,7 +42,7 @@ export const ExerciseEditForm = (props: IExerciseEditForm) => {
   });
   const token = LSHandler.getJwt();
   const [updateExercise, { isError, isSuccess, data }] =
-    useUpdateExerciseMutation({ fixedCacheKey: 'exupdate' });
+    useUpdateExerciseMutation({ fixedCacheKey: `exupdate` });
   const dispatch = useDispatch();
   const debounceTitle = useDebounce(formValues.title, 1500);
   const debounceDescription = useDebounce(formValues.taskDescription, 1500);
@@ -83,7 +83,7 @@ export const ExerciseEditForm = (props: IExerciseEditForm) => {
         </HStack>
         <Editable
           key={`${exData._id}_title`}
-          defaultValue={exData.title ? exData.title : 'Enter the task title'}
+          defaultValue={exercise.title ? exercise.title : 'Enter the task title'}
           placeholder="Enter the task title"
           fontWeight={'bold'}
           fontSize={'x-large'}
@@ -98,8 +98,8 @@ export const ExerciseEditForm = (props: IExerciseEditForm) => {
         </Editable>
         <Editable
           defaultValue={
-            exData.taskDescription
-              ? exData.taskDescription
+            exercise.taskDescription
+              ? exercise.taskDescription
               : 'Enter the task description'
           }
           fontSize={'16px'}

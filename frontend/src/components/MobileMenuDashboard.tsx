@@ -39,7 +39,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
   useEffect(() => {
     const exsSorted = [...newExList].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
     setExercisesToDisplay(exsSorted);
   }, [newExList]);

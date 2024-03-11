@@ -69,7 +69,7 @@ export const DashboardExercisePage = (): JSX.Element => {
           minH={'100vh'}
           alignItems={['flex-start', 'center']}
           w={['100%', `${isSideBarOpen ? 'calc(100% - 320px)' : '100%'}`]}
-          justifyContent={['flex-start', 'center']}
+       //   justifyContent={['flex-start']}
           padding={['20px', '0']}
         >
           <MobileMenuDashBoard />

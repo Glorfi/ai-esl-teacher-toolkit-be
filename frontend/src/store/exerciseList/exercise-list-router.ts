@@ -59,6 +59,19 @@ const replaceSentenceAction = (
   return state;
 };
 
+const updateTimeStampByIdAction = (
+  state: IExercise[],
+  action: PayloadAction<string>
+) => {
+  const exIndex = state.findIndex(
+    (exercise) => exercise._id === action.payload
+  );
+  if (exIndex !== -1) {
+    state[exIndex].updatedAt = new Date();
+  }
+  return state;
+};
+
 export const exerciseListRouter = createSlice({
   name: 'exerciseList',
   initialState,
@@ -68,6 +81,7 @@ export const exerciseListRouter = createSlice({
     addExercise: addExerciseAction,
     replaceExercise: updateExerciseAction,
     replaceSentence: replaceSentenceAction,
+    updateTimeStampById: updateTimeStampByIdAction,
   },
 });
 
@@ -77,4 +91,5 @@ export const {
   addExercise,
   replaceExercise,
   replaceSentence,
+  updateTimeStampById,
 } = exerciseListRouter.actions;

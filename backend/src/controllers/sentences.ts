@@ -3,6 +3,7 @@ import { Exercises, Sentences } from '../db/mongoConnector.js';
 import ISentence from '../interfaces/ISentence.js';
 import { NotFound } from '../errors/NotFound.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
+import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
 
 export const updateSentence = (req: any, res: Response, next: NextFunction) => {
   const { sentence: newSent, answer, hint, options } = req.body;
@@ -32,6 +33,22 @@ export const updateSentence = (req: any, res: Response, next: NextFunction) => {
       }
       return sentence.save();
     })
-    .then((sentence) => res.send(sentence))
+    .then((sentence) => {
+      Exercises.findById(sentence.exercise)
+        .then((ex) => {
+          if (!ex) {
+            throw new NotFound('Exercise not found');
+          }
+          if (ex.owner.toString() !== user) {
+            throw new UnauthorizedAccess(
+              'The user tries to update someone else exercise'
+            );
+          }
+          ex.updatedAt = new Date();
+          ex.save();
+          return sentence;
+        })
+        .then((sentence) => res.send(sentence));
+    })
     .catch((err) => next(err));
 };

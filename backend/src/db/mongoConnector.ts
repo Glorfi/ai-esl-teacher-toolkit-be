@@ -20,8 +20,8 @@ mongoose
   });
 
 const db = mongoose.connection;
-db.on('error', () => {
-  console.error('Failed to connect to DB');
+db.on('error', (err) => {
+  console.error(err);
 });
 
 const Users = mongoose.model('users', userSchema);

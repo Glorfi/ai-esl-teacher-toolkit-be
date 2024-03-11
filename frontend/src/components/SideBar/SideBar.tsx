@@ -37,7 +37,7 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   const exercisesToDisplay: IExercise[] = useMemo(() => {
     const exsSorted = [...newExList].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
     console.log('Sorting');
     return exsSorted;

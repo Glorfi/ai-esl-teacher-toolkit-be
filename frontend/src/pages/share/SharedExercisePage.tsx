@@ -14,7 +14,9 @@ export const SharedExercisePage = (): JSX.Element => {
   const { data: ex, isError } = useGetExerciseByIdQuery({ token, id });
 
   return (
-    <Box minH={'100vh'} bgColor={'white'} padding={'0 20px'}>
+    <Box 
+  //  minH={'100vh'} 
+    bgColor={'white'} padding={'0 20px'}>
       <VStack
         alignItems={'flex-start'}
         w={'100%'}
