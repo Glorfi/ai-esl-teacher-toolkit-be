@@ -37,7 +37,7 @@ interface IFormValid {
   isPasswordValid: boolean | null;
 }
 
-export const SignInPage = (): JSX.Element => {
+const SignInPage = (): JSX.Element => {
   const [userData, setUserData] = useContext(UserContext);
   const [formValues, setFormValues] = useState<ISignInForm>({
     email: '',
@@ -268,3 +268,5 @@ export const SignInPage = (): JSX.Element => {
     </Stack>
   );
 };
+
+export default SignInPage

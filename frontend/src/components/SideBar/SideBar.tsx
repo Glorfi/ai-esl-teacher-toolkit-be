@@ -21,6 +21,10 @@ import { IExercise } from '../../interfaces/exercise';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useDispatch } from 'react-redux';
+import { getTodayExercises } from '../../utils/getTodayExercises';
+import { getYesterdayExercises } from '../../utils/getYesterdayExercises';
+import { getLastSevenDaysExercises } from '../../utils/getLastSevenDaysExercises';
+import { getRestExercises } from '../../utils/getRestExercises';
 
 interface ISideBarMenuProps {
   isOpen: boolean;
@@ -30,17 +34,32 @@ interface ISideBarMenuProps {
 export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
   const jwt = LSHandler.getJwt();
   const { isOpen, onToggle } = props;
-  const [userData, setUserData] = useContext(UserContext);
+  const [userData] = useContext(UserContext);
+  const [todayExList, setTodayExList] = useState<IExercise[] | null>(null);
+  const [yesterdayExList, setYesterdayExList] = useState<IExercise[] | null>(
+    null
+  );
+  const [sevenDaysExList, setSevenDaysExList] = useState<IExercise[] | null>(
+    null
+  );
+  const [restExList, setRestExList] = useState<IExercise[] | null>(null);
   const newExList = useSelector((state: RootState) => state.exerciseList);
   const dispatch = useDispatch();
+  const today = new Date();
 
   const exercisesToDisplay: IExercise[] = useMemo(() => {
     const exsSorted = [...newExList].sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
-    console.log('Sorting');
     return exsSorted;
+  }, [newExList]);
+
+  useEffect(() => {
+    setTodayExList(getTodayExercises(newExList));
+    setYesterdayExList(getYesterdayExercises(newExList));
+    setSevenDaysExList(getLastSevenDaysExercises(newExList));
+    setRestExList(getRestExercises(newExList));
   }, [newExList]);
 
   return (
@@ -71,6 +90,7 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
                 Create Exercise
               </Button>
             </Link>
+
             <Text
               fontSize={'14px'}
               color={'background'}
@@ -87,9 +107,77 @@ export const SideBarMenu = (props: ISideBarMenuProps): JSX.Element => {
               className="thumbnailStack"
               w={'100%'}
             >
-              {exercisesToDisplay?.map((ex) => {
+              {todayExList && todayExList.length > 0 ? (
+                <>
+                  <Text
+                    fontSize={'10px'}
+                    color={'background'}
+                    fontWeight={'medium'}
+                    textAlign={'right'}
+                    w={'100%'}
+                    padding={'0 16px'}
+                  >
+                    Today
+                  </Text>
+                  {todayExList?.map((ex) => {
+                    return <ExerciseThumbnail data={ex} key={ex._id} />;
+                  })}
+                </>
+              ) : null}
+              {/* {exercisesToDisplay?.map((ex) => {
                 return <ExerciseThumbnail data={ex} key={ex._id} />;
-              })}
+              })} */}
+              {yesterdayExList && yesterdayExList.length > 0 ? (
+                <>
+                  <Text
+                    fontSize={'10px'}
+                    color={'background'}
+                    fontWeight={'medium'}
+                    textAlign={'right'}
+                    w={'100%'}
+                    padding={'0 16px'}
+                  >
+                    Yesterday
+                  </Text>
+                  {yesterdayExList?.map((ex) => {
+                    return <ExerciseThumbnail data={ex} key={ex._id} />;
+                  })}
+                </>
+              ) : null}
+              {sevenDaysExList && sevenDaysExList.length > 0 ? (
+                <>
+                  <Text
+                    fontSize={'10px'}
+                    color={'background'}
+                    fontWeight={'medium'}
+                    textAlign={'right'}
+                    w={'100%'}
+                    padding={'0 16px'}
+                  >
+                    Previous 7 Days
+                  </Text>
+                  {sevenDaysExList?.map((ex) => {
+                    return <ExerciseThumbnail data={ex} key={ex._id} />;
+                  })}
+                </>
+              ) : null}
+              {restExList && restExList.length > 0 ? (
+                <>
+                  <Text
+                    fontSize={'10px'}
+                    color={'background'}
+                    fontWeight={'medium'}
+                    textAlign={'right'}
+                    w={'100%'}
+                    padding={'0 16px'}
+                  >
+                    Earlier
+                  </Text>
+                  {restExList?.map((ex) => {
+                    return <ExerciseThumbnail data={ex} key={ex._id} />;
+                  })}
+                </>
+              ) : null}
             </VStack>
             <HStack
               w={'100%'}

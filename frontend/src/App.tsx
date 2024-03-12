@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { AppRoutes } from './pages/RoutesConfig';
 
-import { useContext, useEffect, useState } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 import { UserContext } from './contexts/UserContext';
 import {
   useGetCurrentUserQuery,
@@ -50,21 +50,37 @@ function App() {
   }
 
   return (
-    <Routes>
-      {AppRoutes.map((route, index) => (
-        <Route
-          key={`${route.path}-${index}`}
-          path={route.path}
-          element={
-            route.protected && !data ? (
-              <Navigate to={APP_PATHS.SIGN_IN} replace />
-            ) : (
-              <route.element />
-            )
-          }
-        />
-      ))}
-    </Routes>
+    <Suspense
+      fallback={
+        <VStack minH={'100vh'} justifyContent={'center'}>
+          <Spinner
+            thickness="4px"
+            size={'xl'}
+            speed="0.8s"
+            emptyColor="gray.200"
+            color={'secondary.base'}
+            m={'0 auto'}
+          />
+          <Text>Loading...</Text>
+        </VStack>
+      }
+    >
+      <Routes>
+        {AppRoutes.map((route, index) => (
+          <Route
+            key={`${route.path}-${index}`}
+            path={route.path}
+            element={
+              route.protected && !data ? (
+                <Navigate to={APP_PATHS.SIGN_IN} replace />
+              ) : (
+                <route.element />
+              )
+            }
+          />
+        ))}
+      </Routes>
+    </Suspense>
   );
 }
 

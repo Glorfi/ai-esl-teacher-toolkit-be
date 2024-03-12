@@ -28,7 +28,7 @@ import { PiNotePencil } from 'react-icons/pi';
 import { ExerciseThumbnail } from './SideBarExerciseThumbnail';
 
 export const MobileMenuDashBoard = (): JSX.Element => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
 
   const [userData, setUserData] = useContext(UserContext);
   const newExList = useSelector((state: RootState) => state.exerciseList);
@@ -68,6 +68,7 @@ export const MobileMenuDashBoard = (): JSX.Element => {
             alignItems={'center'}
             width={'100%'}
             padding={0}
+            position={'relative'}
           >
             <VStack w={'100%'} minH={'calc(100% - 50px)'} pb={'20px'}>
               <Link as={ReactRouterLink} to={APP_PATHS.DASHBOARD} w={'100%'}>

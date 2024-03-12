@@ -5,13 +5,15 @@ export interface IExercise {
   skill: 'grammar' | 'vocabulary';
   type: 'fillInGaps' | 'multipleChoice';
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   sentenceList: ISentence[];
   title?: string;
   taskDescription?: string;
   studentLevel?: string;
   studentAge?: number;
+  isRandomOrderEnabled?: boolean;
+  __v: number;
 }
 
 export interface IExerciseCreate {

@@ -4,5 +4,6 @@ export interface ISentence {
   hint?: string;
   options?: string[];
   exercise?: string;
-  _id: 'string';
+  _id: string;
+  __v?: number;
 }
