@@ -10,10 +10,11 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { UserContextProvider } from './contexts/UserContextProvider.tsx';
 const isProduction = process.env.NODE_ENV === 'production';
 
+// basename={isProduction ? '/ai-exercises-generator/' : '/'}
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* <BrowserRouter basename={isProduction ? '/ai-exercises-generator/' : '/'}> */}
-    <HashRouter>
+    <BrowserRouter >
+      {/* <HashRouter> */}
       <Provider store={store}>
         <ChakraProvider theme={theme}>
           <UserContextProvider>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </UserContextProvider>
         </ChakraProvider>
       </Provider>
-    </HashRouter>
+    </BrowserRouter>
+    {/* </HashRouter> */}
   </React.StrictMode>
 );
