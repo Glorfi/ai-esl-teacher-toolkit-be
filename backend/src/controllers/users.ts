@@ -79,7 +79,10 @@ export const getCurrentUser = (
   Users.findById(_id)
     .populate({
       path: 'exercises',
-      populate: { path: 'sentenceList', model: 'sentences' },
+      populate: [
+        { path: 'sentenceList', model: 'sentences' },
+        { path: 'topicList', model: 'topics' },
+      ],
     })
     .then((user) => {
       if (!user) {

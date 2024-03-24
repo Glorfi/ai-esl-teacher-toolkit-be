@@ -28,6 +28,12 @@ const exerciseSchema = new mongoose.Schema({
         ref: 'sentences',
         required: false,
     },
+    topicList: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'topics',
+        required: false,
+        default: [],
+    },
     title: {
         type: String,
         required: false,
@@ -41,14 +47,14 @@ const exerciseSchema = new mongoose.Schema({
         required: false,
     },
     studentAge: {
-        type: Number,
+        type: String,
         required: false,
     },
     isRandomOrderEnabled: {
         type: Boolean,
         required: false,
-        default: true
-    }
+        default: true,
+    },
 });
 export default exerciseSchema;
 //# sourceMappingURL=exerciseSchema.js.map

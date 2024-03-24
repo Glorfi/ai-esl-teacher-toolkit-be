@@ -7,6 +7,7 @@ interface IExercise extends Document {
   createdAt: Date;
   updatedAt: Date;
   sentenceList: [Schema.Types.ObjectId];
+  topicList: Schema.Types.ObjectId[];
   title?: string;
   taskDescription?: string;
   studentLevel?: string;

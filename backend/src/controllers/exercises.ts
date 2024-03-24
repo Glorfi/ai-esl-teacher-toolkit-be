@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { IRequest } from '../interfaces/requests/IRequest.js';
-import { Exercises, Sentences, Users } from '../db/mongoConnector.js';
+import { Exercises, Sentences, Topics, Users } from '../db/mongoConnector.js';
 import IExercise from '../interfaces/IExerciseSchema.js';
 import ISentence from '../interfaces/ISentence.js';
 import { NotFound } from '../errors/NotFound.js';
@@ -9,6 +9,11 @@ import { IGptResponse } from '../interfaces/responses/gpt-api.js';
 import { openAIRequest } from '../utils/openAIrequest.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
 import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
+import { checkExerciseExistance } from '../utils/checkExerciseExistance.js';
+import { checkExerciseOwnership } from '../utils/checkExerciseOwnership.js';
+import { ITopic } from '../interfaces/ITopicSchema.js';
+import { DuplicateError } from '../errors/DuplicateError.js';
+import mongoose from 'mongoose';
 
 export const getUserExercises = (
   req: IRequest,
@@ -17,7 +22,10 @@ export const getUserExercises = (
 ) => {
   const { _id } = req.user;
   Exercises.find({ owner: _id })
-    .populate('sentenceList')
+    .populate([
+      { path: 'sentenceList', model: 'sentences' },
+      { path: 'topicList', model: 'topics' }, // Добавлено здесь
+    ])
     .then((exs: IExercise[]) => {
       res.send(exs);
     });
@@ -29,11 +37,15 @@ export const getExerciseByID = (
   next: NextFunction
 ) => {
   Exercises.findById(req.params.id)
-    .populate('sentenceList')
+    .populate([
+      { path: 'sentenceList', model: 'sentences' },
+      { path: 'topicList', model: 'topics' },
+    ])
     .then((ex: IExercise | null) => {
-      if (!ex) {
-        throw new NotFound('Exercise is not found');
-      }
+      checkExerciseExistance(ex);
+      // if (!ex) {
+      //   throw new NotFound('Exercise is not found');
+      // }
       res.send(ex);
     })
     .catch((err) => next(err));
@@ -86,7 +98,7 @@ export const generateExercise = (
   next: NextFunction
 ) => {
   const { _id: owner } = req.user;
-  const { prompt, skill, type } = req.body;
+  const { prompt, skill, type, studentLevel, studentAge } = req.body;
   let taskDescription: string;
   openAIRequest(prompt)
     .then((sentenceList: ISentence[]) => {
@@ -115,7 +127,14 @@ export const generateExercise = (
       if (type === 'fillInGaps') {
         taskDescription = 'Fill the gaps with the correct word';
       }
-      Exercises.create({ owner, skill, type, taskDescription }).then((ex: any) => {
+      Exercises.create({
+        owner,
+        skill,
+        type,
+        taskDescription,
+        studentAge,
+        studentLevel,
+      }).then((ex: any) => {
         Users.findById(owner)
           .then((user: any | null) => {
             if (!user) {
@@ -212,7 +231,7 @@ export const updateExercise = (
   res: Response,
   next: NextFunction
 ) => {
-  const { title, taskDescription } = req.body;
+  const { title, taskDescription, isRandomOrderEnabled } = req.body;
   const { _id: user } = req.user;
   Exercises.findById(req.params.id)
     .then((ex: IExercise | null) => {
@@ -230,11 +249,150 @@ export const updateExercise = (
       if (taskDescription) {
         ex.taskDescription = taskDescription;
       }
+      if (isRandomOrderEnabled !== undefined) {
+        ex.isRandomOrderEnabled = isRandomOrderEnabled;
+      }
       ex.updatedAt = new Date();
       return ex.save();
     })
     .then((updatedEx) =>
-      updatedEx.populate('sentenceList').then((newEx: any) => res.send(newEx))
+      updatedEx
+        .populate([
+          { path: 'sentenceList', model: 'sentences' },
+          { path: 'topicList', model: 'topics' },
+        ])
+        .then((newEx: any) => res.send(newEx))
     )
     .catch((err) => next(err));
 };
+
+export const addTopicToExercise = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id: user } = req.user;
+  const { skill, name, exerciseId, topicId } = req.body;
+  if (topicId && exerciseId) {
+    Exercises.findById(exerciseId)
+      .then((ex: IExercise | null) => {
+        if (!ex) {
+          throw new NotFound('Exercise not found');
+        }
+        checkExerciseOwnership(ex, user);
+        return Topics.findById(topicId)
+          .then((topic) => {
+            if (!topic) {
+              throw new NotFound('Topic not found');
+            }
+            if (
+              ex.topicList.some(
+                (item) => item.toString() === topic._id.toString()
+              )
+            ) {
+              throw new DuplicateError('The exercise already has this topic');
+            }
+            ex.topicList.push(topic._id);
+            ex.updatedAt = new Date();
+            return ex.save();
+          })
+          .then((updatedEx) =>
+            updatedEx
+              .populate([
+                { path: 'sentenceList', model: 'sentences' },
+                { path: 'topicList', model: 'topics' },
+              ])
+              .then((newEx: any) => res.send(newEx))
+          );
+      })
+      .catch((err) => next(err));
+  } else {
+    Exercises.findById(exerciseId)
+      .then((ex: IExercise | null) => {
+        if (!ex) {
+          throw new NotFound('Exercise not found');
+        }
+        checkExerciseOwnership(ex, user);
+        return Topics.findOne({ name: name })
+          .then((topic) => {
+            if (!topic) {
+              return Topics.create({ skill: skill, name: name }).then(
+                (createdTopic) => {
+                  ex.topicList.push(createdTopic._id);
+                  ex.updatedAt = new Date();
+                  return ex.save();
+                }
+              );
+            }
+            if (
+              ex.topicList.some(
+                (item) => item.toString() === topic._id.toString()
+              )
+            ) {
+              throw new DuplicateError('The exercise already has this topic');
+            }
+            ex.topicList.push(topic._id);
+            ex.updatedAt = new Date();
+            return ex.save();
+          })
+          .then((updatedEx) =>
+            updatedEx
+              .populate([
+                { path: 'sentenceList', model: 'sentences' },
+                { path: 'topicList', model: 'topics' },
+              ])
+              .then((newEx: any) => res.send(newEx))
+          );
+      })
+      .catch((err) => next(err));
+  }
+};
+
+export const removeTopicFromExercise = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { exId, topicId } = req.params;
+
+  Exercises.findByIdAndUpdate(
+    exId,
+    {
+      $pull: { topicList: topicId },
+      $set: { updatedAt: new Date() },
+    },
+    { new: true }
+  )
+    .populate([
+      { path: 'sentenceList', model: 'sentences' },
+      { path: 'topicList', model: 'topics' },
+    ])
+    .then((updatedEx) => {
+      if (!updatedEx) {
+        throw new NotFound('Exercise not found');
+      }
+      res.send(updatedEx);
+    })
+    .catch((err) => next(err));
+};
+
+// const updatedTopicList = ex.topicList.filter(
+//   (topic) => topic.toString() !== topicId.toString()
+// );
+// ex.topicList = updatedTopicList;
+// ex.updatedAt = new Date();
+// return ex.save();
+// })
+// .then((updatedEx) => {
+// if (!updatedEx) {
+//   throw new NotFound('Exercise not found');
+// }
+// updatedEx
+//   .populate([
+//     { path: 'sentenceList', model: 'sentences' },
+//     { path: 'topicList', model: 'topics' },
+//   ])
+//   .then((newEx) => res.send(newEx));
+// })
+
+// .catch((err) => next(err));

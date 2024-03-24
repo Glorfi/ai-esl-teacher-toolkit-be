@@ -4,7 +4,7 @@ import { AuthorizationRequired } from '../errors/AuthorizationRequired.js';
 import { IRequest } from '../interfaces/requests/IRequest.js';
 
 interface AuthRequest extends Request {
-  user?: any; // Define the user property here based on your payload structure
+  user?: any;
 }
 
 export const auth = (
@@ -29,16 +29,3 @@ export const auth = (
   req.user = payload;
   return next();
 };
-
-// Declare a custom middleware type to handle IRequest
-
-// export const authMiddleware: any = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   // Cast req to IRequest
-//   const customReq = req as IRequest;
-//   // Call the original auth middleware
-//   auth(customReq, res, next);
-// };

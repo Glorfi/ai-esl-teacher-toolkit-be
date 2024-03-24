@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import userSchema from './models/userSchema.js';
 import exerciseSchema from './models/exerciseSchema.js';
 import sentenceSchema from './models/sentenceSchema.js';
+import topicSchema from './models/topicSchema.js';
 dotenv.config();
 const currentDb = process.env.NODE_ENV === 'production'
     ? process.env.MONGO_LINK
@@ -22,5 +23,6 @@ db.on('error', (err) => {
 const Users = mongoose.model('users', userSchema);
 const Exercises = mongoose.model('exercises', exerciseSchema);
 const Sentences = mongoose.model('sentences', sentenceSchema);
-export { Users, Exercises, Sentences };
+const Topics = mongoose.model('topics', topicSchema);
+export { Users, Exercises, Sentences, Topics };
 //# sourceMappingURL=mongoConnector.js.map

@@ -1,23 +1,33 @@
-import { Exercises, Sentences, Users } from '../db/mongoConnector.js';
+import { Exercises, Sentences, Topics, Users } from '../db/mongoConnector.js';
 import { NotFound } from '../errors/NotFound.js';
 import { openAIRequest } from '../utils/openAIrequest.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
 import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
+import { checkExerciseExistance } from '../utils/checkExerciseExistance.js';
+import { checkExerciseOwnership } from '../utils/checkExerciseOwnership.js';
+import { DuplicateError } from '../errors/DuplicateError.js';
 export const getUserExercises = (req, res, next) => {
     const { _id } = req.user;
     Exercises.find({ owner: _id })
-        .populate('sentenceList')
+        .populate([
+        { path: 'sentenceList', model: 'sentences' },
+        { path: 'topicList', model: 'topics' }, // Добавлено здесь
+    ])
         .then((exs) => {
         res.send(exs);
     });
 };
 export const getExerciseByID = (req, res, next) => {
     Exercises.findById(req.params.id)
-        .populate('sentenceList')
+        .populate([
+        { path: 'sentenceList', model: 'sentences' },
+        { path: 'topicList', model: 'topics' },
+    ])
         .then((ex) => {
-        if (!ex) {
-            throw new NotFound('Exercise is not found');
-        }
+        checkExerciseExistance(ex);
+        // if (!ex) {
+        //   throw new NotFound('Exercise is not found');
+        // }
         res.send(ex);
     })
         .catch((err) => next(err));
@@ -58,7 +68,7 @@ export const createExercise = (req, res, next) => {
 };
 export const generateExercise = (req, res, next) => {
     const { _id: owner } = req.user;
-    const { prompt, skill, type } = req.body;
+    const { prompt, skill, type, studentLevel, studentAge } = req.body;
     let taskDescription;
     openAIRequest(prompt)
         .then((sentenceList) => {
@@ -79,7 +89,14 @@ export const generateExercise = (req, res, next) => {
         if (type === 'fillInGaps') {
             taskDescription = 'Fill the gaps with the correct word';
         }
-        Exercises.create({ owner, skill, type, taskDescription }).then((ex) => {
+        Exercises.create({
+            owner,
+            skill,
+            type,
+            taskDescription,
+            studentAge,
+            studentLevel,
+        }).then((ex) => {
             Users.findById(owner)
                 .then((user) => {
                 if (!user) {
@@ -160,7 +177,7 @@ export const deleteExercise = (req, res, next) => {
         .catch((err) => next(err));
 };
 export const updateExercise = (req, res, next) => {
-    const { title, taskDescription } = req.body;
+    const { title, taskDescription, isRandomOrderEnabled } = req.body;
     const { _id: user } = req.user;
     Exercises.findById(req.params.id)
         .then((ex) => {
@@ -176,10 +193,119 @@ export const updateExercise = (req, res, next) => {
         if (taskDescription) {
             ex.taskDescription = taskDescription;
         }
+        if (isRandomOrderEnabled !== undefined) {
+            ex.isRandomOrderEnabled = isRandomOrderEnabled;
+        }
         ex.updatedAt = new Date();
         return ex.save();
     })
-        .then((updatedEx) => updatedEx.populate('sentenceList').then((newEx) => res.send(newEx)))
+        .then((updatedEx) => updatedEx
+        .populate([
+        { path: 'sentenceList', model: 'sentences' },
+        { path: 'topicList', model: 'topics' },
+    ])
+        .then((newEx) => res.send(newEx)))
         .catch((err) => next(err));
 };
+export const addTopicToExercise = (req, res, next) => {
+    const { _id: user } = req.user;
+    const { skill, name, exerciseId, topicId } = req.body;
+    if (topicId && exerciseId) {
+        Exercises.findById(exerciseId)
+            .then((ex) => {
+            if (!ex) {
+                throw new NotFound('Exercise not found');
+            }
+            checkExerciseOwnership(ex, user);
+            return Topics.findById(topicId)
+                .then((topic) => {
+                if (!topic) {
+                    throw new NotFound('Topic not found');
+                }
+                if (ex.topicList.some((item) => item.toString() === topic._id.toString())) {
+                    throw new DuplicateError('The exercise already has this topic');
+                }
+                ex.topicList.push(topic._id);
+                ex.updatedAt = new Date();
+                return ex.save();
+            })
+                .then((updatedEx) => updatedEx
+                .populate([
+                { path: 'sentenceList', model: 'sentences' },
+                { path: 'topicList', model: 'topics' },
+            ])
+                .then((newEx) => res.send(newEx)));
+        })
+            .catch((err) => next(err));
+    }
+    else {
+        Exercises.findById(exerciseId)
+            .then((ex) => {
+            if (!ex) {
+                throw new NotFound('Exercise not found');
+            }
+            checkExerciseOwnership(ex, user);
+            return Topics.findOne({ name: name })
+                .then((topic) => {
+                if (!topic) {
+                    return Topics.create({ skill: skill, name: name }).then((createdTopic) => {
+                        ex.topicList.push(createdTopic._id);
+                        ex.updatedAt = new Date();
+                        return ex.save();
+                    });
+                }
+                if (ex.topicList.some((item) => item.toString() === topic._id.toString())) {
+                    throw new DuplicateError('The exercise already has this topic');
+                }
+                ex.topicList.push(topic._id);
+                ex.updatedAt = new Date();
+                return ex.save();
+            })
+                .then((updatedEx) => updatedEx
+                .populate([
+                { path: 'sentenceList', model: 'sentences' },
+                { path: 'topicList', model: 'topics' },
+            ])
+                .then((newEx) => res.send(newEx)));
+        })
+            .catch((err) => next(err));
+    }
+};
+export const removeTopicFromExercise = (req, res, next) => {
+    const { exId, topicId } = req.params;
+    Exercises.findByIdAndUpdate(exId, {
+        $pull: { topicList: topicId },
+        $set: { updatedAt: new Date() },
+    }, { new: true })
+        .populate([
+        { path: 'sentenceList', model: 'sentences' },
+        { path: 'topicList', model: 'topics' },
+    ])
+        .then((updatedEx) => {
+        if (!updatedEx) {
+            throw new NotFound('Exercise not found');
+        }
+        res.send(updatedEx);
+    })
+        .catch((err) => next(err));
+};
+// const updatedTopicList = ex.topicList.filter(
+//   (topic) => topic.toString() !== topicId.toString()
+// );
+// ex.topicList = updatedTopicList;
+// ex.updatedAt = new Date();
+// return ex.save();
+// })
+// .then((updatedEx) => {
+// if (!updatedEx) {
+//   throw new NotFound('Exercise not found');
+// }
+// updatedEx
+//   .populate([
+//     { path: 'sentenceList', model: 'sentences' },
+//     { path: 'topicList', model: 'topics' },
+//   ])
+//   .then((newEx) => res.send(newEx));
+// })
+// .catch((err) => next(err));
 //# sourceMappingURL=exercises.js.map

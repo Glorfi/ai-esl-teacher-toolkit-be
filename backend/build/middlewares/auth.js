@@ -19,15 +19,4 @@ export const auth = (req, res, next) => {
     req.user = payload;
     return next();
 };
-// Declare a custom middleware type to handle IRequest
-// export const authMiddleware: any = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   // Cast req to IRequest
-//   const customReq = req as IRequest;
-//   // Call the original auth middleware
-//   auth(customReq, res, next);
-// };
 //# sourceMappingURL=auth.js.map
