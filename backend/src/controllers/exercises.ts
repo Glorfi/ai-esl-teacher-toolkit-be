@@ -98,12 +98,15 @@ export const generateExercise = (
   next: NextFunction
 ) => {
   const { _id: owner } = req.user;
-  const { prompt, skill, type, studentLevel, studentAge } = req.body;
+  const { prompt, skill, type, studentLevel, studentAge, isStrictChecking } =
+    req.body;
   let taskDescription: string;
   openAIRequest(prompt)
     .then((sentenceList: ISentence[]) => {
       if (!Array.isArray(sentenceList)) {
-        throw new GenerationFailed('AI returned non-array data structure');
+        throw new GenerationFailed(
+          'Please try again! AI returned wrong exercise structure.'
+        );
       }
       const isSentenceIncludeAnswer = sentenceList.every((item) =>
         item.sentence.includes(item.answer)
@@ -111,14 +114,14 @@ export const generateExercise = (
       const areOptionsIncludeAnswer = sentenceList.every((item) =>
         item.options?.includes(item.answer)
       );
-      if (!isSentenceIncludeAnswer) {
+      if (!isSentenceIncludeAnswer && isStrictChecking) {
         throw new GenerationFailed(
-          'AI returned wrong data structure: missing answer in the sentence'
+          'Please, try again! The exercise is missing answer in the sentence. Alternatively, try to disable strict checking.'
         );
       }
-      if (!areOptionsIncludeAnswer) {
+      if (!areOptionsIncludeAnswer && isStrictChecking) {
         throw new GenerationFailed(
-          'AI returned wrong data structure: missing answer in the options'
+          'Please, try again! The exercise is missing answer in the options. Alternatively, try to disable strict checking.'
         );
       }
       if (type === 'multipleChoice') {
