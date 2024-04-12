@@ -1,1 +1,0 @@
-{"version":3,"file":"AuthorizationRequired.js","sourceRoot":"","sources":["../../src/errors/AuthorizationRequired.ts"],"names":[],"mappings":"AAKA,MAAM,OAAO,qBAAsB,SAAQ,KAAK;IAC9C,YAAY,OAAe;QACzB,KAAK,CAAC,OAAO,CAAC,CAAC;QACf,IAAI,CAAC,UAAU,GAAG,GAAG,CAAC;IACxB,CAAC;CACF"}
