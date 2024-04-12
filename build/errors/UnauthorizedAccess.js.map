@@ -1,1 +1,0 @@
-{"version":3,"file":"UnauthorizedAccess.js","sourceRoot":"","sources":["../../src/errors/UnauthorizedAccess.ts"],"names":[],"mappings":"AAKA,MAAM,OAAO,kBAAmB,SAAQ,KAAK;IAC3C,YAAY,OAAe;QACzB,KAAK,CAAC,OAAO,CAAC,CAAC;QACf,IAAI,CAAC,UAAU,GAAG,GAAG,CAAC;IACxB,CAAC;CACF"}

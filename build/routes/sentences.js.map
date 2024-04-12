@@ -1,1 +1,0 @@
-{"version":3,"file":"sentences.js","sourceRoot":"","sources":["../../src/routes/sentences.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,MAAM,SAAS,CAAC;AAC9B,OAAO,EAAE,IAAI,EAAE,MAAM,wBAAwB,CAAC;AAC9C,OAAO,EAAE,cAAc,EAAE,MAAM,6BAA6B,CAAC;AAE7D,MAAM,eAAe,GAAG,OAAO,CAAC,MAAM,EAAE,CAAC;AAEzC,eAAe,CAAC,GAAG,CAAC,MAAM,EAAE,IAAI,EAAE,cAAc,CAAC,CAAC;AAElD,eAAe,eAAe,CAAC"}
