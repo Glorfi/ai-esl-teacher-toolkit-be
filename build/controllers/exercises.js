@@ -80,7 +80,7 @@ export const generateExercise = (req, res, next) => {
         if (!isSentenceIncludeAnswer && isStrictChecking) {
             throw new GenerationFailed('Please, try again! The exercise is missing answer in the sentence. Alternatively, try to disable strict checking.');
         }
-        if (!areOptionsIncludeAnswer && isStrictChecking) {
+        if (!areOptionsIncludeAnswer && isStrictChecking && type !== 'fillInGaps') {
             throw new GenerationFailed('Please, try again! The exercise is missing answer in the options. Alternatively, try to disable strict checking.');
         }
         if (type === 'multipleChoice') {

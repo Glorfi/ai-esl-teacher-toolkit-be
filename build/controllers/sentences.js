@@ -3,12 +3,12 @@ import { NotFound } from '../errors/NotFound.js';
 import { GenerationFailed } from '../errors/GenerationFailed.js';
 import { UnauthorizedAccess } from '../errors/UnauthorizedAccess.js';
 export const updateSentence = (req, res, next) => {
-    const { sentence: newSent, answer, hint, options } = req.body;
+    const { sentence: newSent, answer, hint, options, exerciseType } = req.body;
     const { _id: user } = req.user;
     if (!newSent.includes(answer)) {
         throw new GenerationFailed('The sentence does not include answer');
     }
-    if (!options.includes(answer)) {
+    if (!options.includes(answer) && exerciseType === "multipleChoice") {
         throw new GenerationFailed('The options do not include answer');
     }
     Sentences.findById(req.params.id)
