@@ -2,8 +2,8 @@
     "version": 2,
     "rewrites": [
         {
-            "source": "/(.*)",
-            "destination": "/vercel/output/build/api"
+            "source": "./vercel/output",
+            "destination": "/api"
         }
     ]
 }
