@@ -2,7 +2,7 @@
   "name": "aiexgen-be",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "type": "module",
   "husky": {
     "hook": {
@@ -11,6 +11,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf build && tsc",
+    "add-build": "git add build",
     "local": "node --no-warnings --loader ts-node/esm src/index.ts",
     "local-network": "node --no-warnings --loader ts-node/esm src/index.ts --host 192.168.43.59 --port 5050",
     "dev": "nodemon --watch src/ -e ts --exec \"npm run local\"",
