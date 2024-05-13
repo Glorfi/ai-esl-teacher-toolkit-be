@@ -7,7 +7,7 @@
     "moduleResolution": "NodeNext",
     "sourceMap": true,
     "outDir": "build",
-    "rootDir": "./src",
+    "rootDir": "./",
     "resolveJsonModule": true,
     "allowJs": true,
 
