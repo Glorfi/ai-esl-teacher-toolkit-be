@@ -1,1 +1,0 @@
-{"version":3,"file":"checkExerciseOwnership.js","sourceRoot":"","sources":["../../src/utils/checkExerciseOwnership.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,kBAAkB,EAAE,MAAM,iCAAiC,CAAC;AAGrE,MAAM,UAAU,sBAAsB,CACpC,QAA0B,EAC1B,MAAc;IAEd,IAAI,QAAQ,IAAI,QAAQ,CAAC,KAAK,CAAC,QAAQ,EAAE,KAAK,MAAM,EAAE,CAAC;QACrD,MAAM,IAAI,kBAAkB,CAC1B,gDAAgD,CACjD,CAAC;IACJ,CAAC;IACD,OAAO;AACT,CAAC"}
