@@ -42,12 +42,13 @@ export const getExerciseByID = (
       { path: 'topicList', model: 'topics' },
     ])
     .then((ex: IExercise | null) => {
-      checkExerciseExistance(ex);
-      // if (!ex) {
-      //   throw new NotFound('Exercise is not found');
-      // }
-      res.send(ex);
+      if (!ex) {
+        throw new NotFound('Exercise is not found');
+      }
+      ex.views += 1;
+      return ex.save();
     })
+    .then((ex) => res.send(ex))
     .catch((err) => next(err));
 };
 
@@ -119,7 +120,11 @@ export const generateExercise = (
           'Please, try again! The exercise is missing answer in the sentence. Alternatively, try to disable strict checking.'
         );
       }
-      if (!areOptionsIncludeAnswer && isStrictChecking && type !== 'fillInGaps') {
+      if (
+        !areOptionsIncludeAnswer &&
+        isStrictChecking &&
+        type !== 'fillInGaps'
+      ) {
         throw new GenerationFailed(
           'Please, try again! The exercise is missing answer in the options. Alternatively, try to disable strict checking.'
         );

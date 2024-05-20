@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import IExercise from '../../interfaces/IExerciseSchema.js';
+import { required } from 'joi';
 
 const exerciseSchema = new mongoose.Schema<IExercise>({
   owner: {
@@ -57,6 +58,11 @@ const exerciseSchema = new mongoose.Schema<IExercise>({
     required: false,
     default: true,
   },
+  views: {
+    type: Number,
+    required: false,
+    default: 0,
+  }
 });
 
 export default exerciseSchema;
