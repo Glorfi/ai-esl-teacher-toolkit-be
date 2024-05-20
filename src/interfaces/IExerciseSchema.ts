@@ -12,6 +12,7 @@ interface IExercise extends Document {
   taskDescription?: string;
   studentLevel?: string;
   studentAge?: number;
+  views: number;
   isRandomOrderEnabled?: boolean;
 }
 
