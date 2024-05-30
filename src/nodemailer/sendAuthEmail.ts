@@ -15,7 +15,7 @@ export const sendAuthEmail = (
       from: process.env.SENDER_EMAIL,
       to: email,
       subject: 'Your OTP',
-      text: `Your Token is: ${token}`,
+      text: `Your OTP Token is: ${token}`,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
