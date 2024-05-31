@@ -8,7 +8,7 @@ export const sendAuthEmail = (
   req: IAuthRequest,
   res: Response,
   next: NextFunction
-) => { 
+) => {
   if (req.otpInfo) {
     const { email, token } = req.otpInfo;
     const mailOptions = {
