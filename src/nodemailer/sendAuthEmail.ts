@@ -24,6 +24,6 @@ export const sendAuthEmail = (
         console.log('Email sent:', info.response);
         res.status(201).send({ message: 'Email has been sent' });
       }
-    });
+    });  
   }
 };
