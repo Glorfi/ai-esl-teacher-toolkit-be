@@ -8,7 +8,7 @@ export const sendAuthEmail = (
   req: IAuthRequest,
   res: Response,
   next: NextFunction
-) => {   
+) => {
   if (req.otpInfo) {
     const { email, token } = req.otpInfo;
     const mailOptions = {
@@ -20,7 +20,7 @@ export const sendAuthEmail = (
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         next(error);
-      } else {  
+      } else {
         console.log('Email sent:', info.response);
         res.status(201).send({ message: 'Email has been sent' });
       }
