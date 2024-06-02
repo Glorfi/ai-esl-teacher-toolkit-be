@@ -22,7 +22,8 @@ export const auth = (
   }
   let payload;
   try {
-    payload = jsonwebtoken.verify(token, 'supersecret');
+    const secret: string = process.env.JWT_SECRET || "supersecret"
+    payload = jsonwebtoken.verify(token, secret);
   } catch (error) {
     throw new AuthorizationRequired('Authorization Required');
   }

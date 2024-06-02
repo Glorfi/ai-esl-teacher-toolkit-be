@@ -12,7 +12,7 @@ import { IMagicSignIn } from '../interfaces/requests/IMagicSignIn.js';
 import { authenticator } from 'otplib';
 import { BadRequest } from '../errors/BadRequest.js';
 
-authenticator.options = { bcrypt, digits: 6, step: 120 };
+authenticator.options = { bcrypt, digits: 6, step: 300 };
 
 export const createUser = (
   req: ISignUpSignInRequest,
@@ -65,7 +65,8 @@ export const login = (
           return user;
         })
         .then((user) => {
-          const token = jsonwebtoken.sign({ _id: user._id }, 'supersecret', {
+          const secret: string = process.env.JWT_SECRET || "supersecret"
+          const token = jsonwebtoken.sign({ _id: user._id }, secret, {
             expiresIn: '14d',
           });
           return token;
@@ -141,8 +142,8 @@ export const generateOtp = (
 };
 
 export const verifyOtp = (req: Request, res: Response, next: NextFunction) => {
-  const email = req.query.email as string;
-  const otp = req.query.token as string;
+  const email = req.body.email as string;
+  const otp = req.body.token as string;
 
   if (!email || !otp) {
     throw new BadRequest('Email and token are required');
@@ -164,8 +165,8 @@ export const verifyOtp = (req: Request, res: Response, next: NextFunction) => {
       if (!isValid) {
         throw new BadRequest('Invalid or expired OTP');
       }
-
-      const token = jsonwebtoken.sign({ _id: user._id }, 'supersecret', {
+      const secret: string = process.env.JWT_SECRET || "supersecret"
+      const token = jsonwebtoken.sign({ _id: user._id }, secret, {
         expiresIn: '14d',
       });
       return token;
