@@ -13,7 +13,7 @@ const regRouter = express.Router();
 
 regRouter.post('/signup', celebrate(authCredentialsConfig), createUser);
 regRouter.post('/signin', celebrate(authCredentialsConfig), login);
-regRouter.post('/magic/signin', generateOtp, sendAuthEmail);
+regRouter.post('/magic', generateOtp, sendAuthEmail);
 regRouter.post('/magic/verify', verifyOtp);
 
 export default regRouter;
