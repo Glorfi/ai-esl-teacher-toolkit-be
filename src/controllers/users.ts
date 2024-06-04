@@ -65,7 +65,7 @@ export const login = (
           return user;
         })
         .then((user) => {
-          const secret: string = process.env.JWT_SECRET || "supersecret"
+          const secret: string = process.env.JWT_SECRET || 'supersecret';
           const token = jsonwebtoken.sign({ _id: user._id }, secret, {
             expiresIn: '14d',
           });
@@ -128,15 +128,21 @@ export const generateOtp = (
   Users.findOne({ email })
     .then((user) => {
       if (!user) {
-        throw new NotFound('User not found');
-      }
-      const token = authenticator.generate(user._id.toString());
+        // throw new NotFound('User not found');
+        Users.create({
+          email,
+        }).then((newUser) => {
+          const token = authenticator.generate(newUser._id.toString());
+          req.otpInfo = { email: newUser.email, token: token, newUser: true };
+          return next();
+        });
+      } else {
+        const token = authenticator.generate(user._id.toString());
 
-      ///  res.send({ token: token });
-      req.otpInfo = { email: user.email, token: token };
-      console.log(`Token ${token}`);
-      
-      return next();
+        req.otpInfo = { email: user.email, token: token, newUser: false };
+
+        return next();
+      }
     })
     .catch((err) => next(err));
 };
@@ -148,7 +154,8 @@ export const verifyOtp = (req: Request, res: Response, next: NextFunction) => {
   if (!email || !otp) {
     throw new BadRequest('Email and token are required');
   }
-
+  console.log(email);
+  
   // Find the user by email
   Users.findOne({ email })
     .then((user) => {
@@ -165,7 +172,7 @@ export const verifyOtp = (req: Request, res: Response, next: NextFunction) => {
       if (!isValid) {
         throw new BadRequest('Invalid or expired OTP');
       }
-      const secret: string = process.env.JWT_SECRET || "supersecret"
+      const secret: string = process.env.JWT_SECRET || 'supersecret';
       const token = jsonwebtoken.sign({ _id: user._id }, secret, {
         expiresIn: '14d',
       });

@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import { transporter } from './transporter.js';
 import { BadRequest } from '../errors/BadRequest.js';
 interface IAuthRequest extends Request {
-  otpInfo?: { email: string; token: string };
+  otpInfo?: { email: string; token: string, newUser: boolean };
 }
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -15,7 +15,7 @@ export const sendAuthEmail = (
   if (!req.otpInfo) {
     throw new BadRequest("Request doesn't contain email and token fields");
   }
-  const { email, token } = req.otpInfo;
+  const { email, token, newUser } = req.otpInfo;
   let host: string = '';
   if (req.headers.origin) {
     host = req.headers.origin;
@@ -26,7 +26,7 @@ export const sendAuthEmail = (
   const mailOptions = {
     from: process.env.SENDER_EMAIL,
     to: email,
-    subject: 'Your Magic Link',
+    subject: newUser ? 'Welcome to ESL Teacher Toolkit' : "Login for ESL Teacher Toolkit",
     text: `Your OTP Token is: ${token}, Your magic link: ${link}`,
   };
 
