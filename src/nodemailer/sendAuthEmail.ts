@@ -1,8 +1,10 @@
 import { NextFunction, Response, Request } from 'express';
 import { transporter } from './transporter.js';
 import { BadRequest } from '../errors/BadRequest.js';
+import { signupEmailHTML } from './email-templates/signupEmail.js';
+import { signinEmailHTML } from './email-templates/signinEmail.js';
 interface IAuthRequest extends Request {
-  otpInfo?: { email: string; token: string, newUser: boolean };
+  otpInfo?: { email: string; token: string; newUser: boolean };
 }
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -26,8 +28,11 @@ export const sendAuthEmail = (
   const mailOptions = {
     from: process.env.SENDER_EMAIL,
     to: email,
-    subject: newUser ? 'Welcome to ESL Teacher Toolkit' : "Login for ESL Teacher Toolkit",
-    text: `Your OTP Token is: ${token}, Your magic link: ${link}`,
+    subject: newUser
+      ? 'Welcome to ESL Teacher Toolkit'
+      : 'Login for ESL Teacher Toolkit',
+    //  text: `Your OTP Token is: ${token}, Your magic link: ${link}`,
+    html: newUser ? signupEmailHTML(link, token) : signinEmailHTML(link, token),
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
