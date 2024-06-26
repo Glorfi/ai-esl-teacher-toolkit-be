@@ -9,7 +9,7 @@ import { celebrate } from 'celebrate';
 import { authCredentialsConfig } from '../validation/authValidation.js';
 import { sendAuthEmail } from '../nodemailer/sendAuthEmail.js';
 
-const regRouter = express.Router();
+const regRouter = express.Router(); 
 
 regRouter.post('/signup', celebrate(authCredentialsConfig), createUser); 
 regRouter.post('/signin', celebrate(authCredentialsConfig), login);
