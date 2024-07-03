@@ -11,14 +11,17 @@ export const openAIRequest = (prompt: string) => {
       Authorization: `Bearer ${process.env.OPEN_AI_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gpt-3.5-turbo-0125',//'gpt-3.5-turbo-0125',//'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-0125', //'gpt-3.5-turbo-0125',//'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       temperature: 1,
-      max_tokens: 4000,
+      max_tokens: 4095,
+      top_p: 1,
     }),
   })
     .then((gptData) => gptData.json())
     .then((gptRes: IGptResponse) => {
+      console.log(gptRes);
+
       const gptMessageString = JSON.parse(gptRes.choices[0].message.content);
       return gptMessageString;
     })
