@@ -5,20 +5,20 @@ import exerciseSchema from './models/exerciseSchema.js';
 import sentenceSchema from './models/sentenceSchema.js';
 import topicSchema from './models/topicSchema.js';
 
-dotenv.config();
-const currentDb =
-  process.env.NODE_ENV === 'production'
-    ? process.env.MONGO_LINK
-    : 'mongodb://127.0.0.1:27017/exsdb';
+// dotenv.config();
+// const currentDb =
+//   process.env.NODE_ENV === 'production'
+//     ? process.env.MONGO_LINK
+//     : 'mongodb://127.0.0.1:27017/exsdb';
 
-mongoose
-  .connect(currentDb || '', {})
-  .then(() => {
-    console.log('DataBase is Connected');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// mongoose
+//   .connect(currentDb || '', {})
+//   .then(() => {
+//     console.log('DataBase is Connected');
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 const db = mongoose.connection;
 db.on('error', (err) => {

@@ -4,9 +4,23 @@ import { errors } from 'celebrate';
 import cors from 'cors';
 import { transporter } from './nodemailer/transporter.js';
 import { sendAlarmEmail } from './nodemailer/sendAlarmEmail.js';
+import mongoose from 'mongoose';
+
+const currentDb =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGO_LINK
+    : 'mongodb://127.0.0.1:27017/exsdb';
 
 const app = express();
 app.use(express.json());
+mongoose
+  .connect(currentDb || '', {})
+  .then(() => {
+    console.log('DataBase is Connected');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 app.use(cors());
 app.get('/', (req, res) => {
   res.send('The server is up and running!');
