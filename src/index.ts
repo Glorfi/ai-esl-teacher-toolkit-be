@@ -11,6 +11,18 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.send('The server is up and running!');
 });
+// app.use((req, res, next) => {
+//   logger.info({
+//     message: `HTTP ${req.method} ${req.url}`,
+//     method: req.method,
+//     url: req.url,
+//     headers: req.headers,
+//     body: req.body,
+//   });
+//   logger.info({})
+//   next();
+// });
+//app.use(userActivityLoggerMiddleware);
 app.use('/api', router); // тут позже добавить env
 app.use(errors());
 app.use((err: any, req: any, res: any, next: any) => {
