@@ -4,7 +4,7 @@ import 'winston-mongodb';
 const loggerDb =
   process.env.NODE_ENV === 'production'
     ? process.env.MONGO_LOGS_LINK
-    : 'mongodb://127.0.0.1:27017/exsdb';
+    : 'mongodb://127.0.0.1:27017/logs';
 
 export const logger = createLogger({
   level: 'info',

@@ -4,6 +4,6 @@ import { updateSentence } from '../controllers/sentences.js';
 
 const sentencesRouter = express.Router();
 
-sentencesRouter.put('/:id', auth, updateSentence);
+sentencesRouter.put('/:id', updateSentence);
 
 export default sentencesRouter;
