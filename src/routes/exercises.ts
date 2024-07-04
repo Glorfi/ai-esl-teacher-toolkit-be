@@ -15,12 +15,12 @@ import { logUserActivity } from '../middlewares/userActivityLogger.js';
 const exsRouter = express.Router();
 
 exsRouter.get('/:id', getExerciseByID);
-exsRouter.get('/', auth, logUserActivity, getUserExercises);
-exsRouter.post('/', auth, logUserActivity, createExercise);
-exsRouter.post('/generate', auth, logUserActivity, generateExercise);
-exsRouter.put('/:id', auth, logUserActivity, updateExercise);
-exsRouter.delete('/:id', auth, logUserActivity, deleteExercise);
-exsRouter.post('/topics', auth, logUserActivity, addTopicToExercise);
+exsRouter.get('/', auth, getUserExercises);
+exsRouter.post('/', auth, createExercise);
+exsRouter.post('/generate', auth, generateExercise);
+exsRouter.put('/:id', auth, updateExercise);
+exsRouter.delete('/:id', auth, deleteExercise);
+exsRouter.post('/topics', auth, addTopicToExercise);
 exsRouter.delete(
   '/:exId/topics/:topicId',
   auth,
