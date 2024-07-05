@@ -10,7 +10,7 @@ import { logUserActivity } from './middlewares/userActivityLogger.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(logUserActivity);
+//app.use(logUserActivity) TWO MongoDB connections don't work properly on Vercel, rethink logging later;
 app.get('/', (req, res) => {
   res.send('The server is up and running!');
 });

@@ -5,7 +5,6 @@ import { auth } from '../middlewares/auth.js';
 import exsRouter from './exercises.js';
 import sentencesRouter from './sentences.js';
 import topicsRouter from './topics.js';
-import { logUserActivity } from '../middlewares/userActivityLogger.js';
 
 export const router = express.Router();
 
