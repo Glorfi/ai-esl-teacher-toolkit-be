@@ -33,6 +33,7 @@ export const logger = createLogger({
       port: 3055,
       path: '/logs',
       batch: true,
+      ssl: true,
       batchInterval: 6000,
     }),
   ],
