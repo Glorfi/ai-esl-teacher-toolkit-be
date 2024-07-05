@@ -4,13 +4,12 @@ import { errors } from 'celebrate';
 import cors from 'cors';
 import { transporter } from './nodemailer/transporter.js';
 import { sendAlarmEmail } from './nodemailer/sendAlarmEmail.js';
-import mongoose from 'mongoose';
 import { logUserActivity } from './middlewares/userActivityLogger.js';
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-//app.use(logUserActivity) TWO MongoDB connections don't work properly on Vercel, rethink logging later;
+app.use(logUserActivity);
 app.get('/', (req, res) => {
   res.send('The server is up and running!');
 });
