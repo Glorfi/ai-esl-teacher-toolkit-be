@@ -1,22 +1,41 @@
 import { NextFunction, Response } from 'express';
 import { IRequest } from '../interfaces/requests/IRequest.js';
 import { logger } from '../logger/logger.js';
+import jsonwebtoken from 'jsonwebtoken';
+
+interface IUserPayload {
+  _id: string;
+  // любые другие поля, которые есть в вашем токене
+}
 
 export function logUserActivity(
   req: IRequest,
   res: Response,
   next: NextFunction
 ) {
-  if (!req.user) {
+  const authorizationHeader = req.headers.authorization;
+  const token = authorizationHeader?.split(' ')[1];
+  if (!token) {
+    logger.info({
+      message: `Visitor did ${req.method} at ${req.url}`,
+      userID: null,
+      endpoint: req.originalUrl,
+      method: req.method,
+    });
     return next();
   }
-
-  logger.info({
-    message: `User: ${req.user._id} did ${req.method} at ${req.url}`,
-    userID: req.user._id,
-    endpoint: req.originalUrl,
-    method: req.method,
-  });
-
-  return next();
+  let user;
+  try {
+    const secret: string = process.env.JWT_SECRET || 'supersecret';
+    user = jsonwebtoken.verify(token, secret) as IUserPayload;
+    logger.info({
+      message: `User ${user?._id} did ${req.method} at ${req.url}`,
+      userID: user?._id,
+      endpoint: req.originalUrl,
+      method: req.method,
+    });
+    return next();
+  } catch (error) {
+    return next();
+  }
 }
