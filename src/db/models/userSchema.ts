@@ -25,6 +25,16 @@ const userSchema = new mongoose.Schema<IUser>({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'exercises',
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    select: false,
+  },
+  latestAuth: {
+    type: Date,
+    default: Date.now,
+    select: false,
+  },
 });
 
 export default userSchema;

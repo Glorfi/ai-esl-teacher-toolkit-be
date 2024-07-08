@@ -5,6 +5,8 @@ interface IUser extends Document {
   email: string;
   password: string;
   exercises?: [mongoose.Schema.Types.ObjectId];
+  createdAt: Date,
+  latestAuth: Date,
 }
 
 export default IUser;

@@ -102,7 +102,7 @@ export const getCurrentUser = (
   next: NextFunction
 ) => {
   const { _id } = req.user;
-  Users.findById(_id)
+  Users.findByIdAndUpdate(_id, { latestAuth: Date.now() }, { new: false })
     .populate({
       path: 'exercises',
       populate: [
@@ -114,8 +114,12 @@ export const getCurrentUser = (
       if (!user) {
         throw new NotFound('User is not found');
       }
-      return res.send(user);
+      res.send(user);
     })
+    // .then((user) => {
+    //   user.select();
+    //   // res.send(user);
+    // })
     .catch(next);
 };
 
@@ -155,7 +159,7 @@ export const verifyOtp = (req: Request, res: Response, next: NextFunction) => {
     throw new BadRequest('Email and token are required');
   }
   console.log(email);
-  
+
   // Find the user by email
   Users.findOne({ email })
     .then((user) => {
