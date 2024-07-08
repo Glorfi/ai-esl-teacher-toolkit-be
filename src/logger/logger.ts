@@ -30,10 +30,10 @@ export const logger = createLogger({
     // }),
     new transports.Http({
       host: loggerHost,
-      port: 3000,
+      port: 3055,
       path: '/logs',
       batch: true,
-      ssl: true,
+    //  ssl: true,
       batchInterval: 6000,
     }),
   ],
