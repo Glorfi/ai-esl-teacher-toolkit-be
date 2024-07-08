@@ -9,7 +9,7 @@ import { logUserActivity } from './middlewares/userActivityLogger.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(logUserActivity);
+//app.use(logUserActivity);
 app.get('/', (req, res) => {
   res.send('The server is up and running!');
 });
