@@ -31,7 +31,7 @@ app.listen({ port: 5050 }, () => {
 });
 transporter
   .verify()
-  .then(() => console.log('Connected to Google SMTP'))
+  .then(() => console.log('Connected to SMTP'))
   .catch((err) => console.log(err));
 
 export default app;

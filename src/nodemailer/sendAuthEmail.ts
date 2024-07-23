@@ -26,7 +26,7 @@ export const sendAuthEmail = (
   }
   const link = `${host}/auth/magic?email=${email}&token=${token}`;
   const mailOptions = {
-    from: process.env.SENDER_EMAIL,
+    from: `ESL Teacher Toolkit <${process.env.SENDER_EMAIL}>`,
     to: email,
     subject: newUser
       ? 'Welcome to ESL Teacher Toolkit'
