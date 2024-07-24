@@ -11,7 +11,7 @@ const loggerHost =
     ? 'ai-esl-teacher-toolkit-logger.vercel.app'
     : 'localhost';
 
-export const logger = createLogger({
+const logger = createLogger({
   level: 'info',
   format: format.combine(
     format.timestamp(),
@@ -30,13 +30,7 @@ export const logger = createLogger({
         console.error('Error connecting to MongoDB transport:');
       })
       .on('connection', () => console.log('Logger DB Connected')),
-    // new transports.Http({
-    //   host: loggerHost,
-    //   port: 3055,
-    //   path: '/logs',
-    // //  batch: true,
-    //   ssl: true,
-    // //  batchInterval: 6000,
-    // }),
   ],
 });
+
+export default logger

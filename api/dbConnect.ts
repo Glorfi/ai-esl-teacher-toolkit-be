@@ -1,19 +1,16 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import exerciseSchema from "../src/db/models/exerciseSchema.js";
-import sentenceSchema from "../src/db/models/sentenceSchema.js";
-import topicSchema from "../src/db/models/topicSchema.js";
-import userSchema from "../src/db/models/userSchema.js";
 
 dotenv.config();
 
-const MONGODB_URI = process.env.NODE_ENV === 'production'
-  ? process.env.MONGO_LINK
-  : 'mongodb://127.0.0.1:27017/exsdb';
+const MONGODB_URI =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGO_LINK
+    : 'mongodb://127.0.0.1:27017/exsdb';
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local",
+    'Please define the MONGODB_URI environment variable inside .env.local'
   );
 }
 
@@ -37,9 +34,11 @@ async function dbConnect() {
     const opts = {
       bufferCommands: false,
     };
-    cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose
+      .connect(MONGODB_URI as string, opts)
+      .then((mongoose) => {
+        return mongoose;
+      });
   }
   try {
     cached.conn = await cached.promise;
