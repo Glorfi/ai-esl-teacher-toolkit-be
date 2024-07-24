@@ -15,7 +15,7 @@ const createMongoTransport = (retryCount = 0) => {
   return new transports.MongoDB({
     level: 'info',
     db: loggerDb ? loggerDb : '',
-    options: { useUnifiedTopology: true },
+    options: { bufferCommands: false },
     collection: 'api_logs',
     expireAfterSeconds: 2592000,
   }).on('error', (err) => {
