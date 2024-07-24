@@ -14,10 +14,8 @@ const currentDb =
     : 'mongodb://127.0.0.1:27017/exsdb';
 
 await dbConnect()
-  .then(() => console.log('HELLO YOPTA'))
-  .catch(() => console.log('ERROR YOPTA'));
-
-
+  .then(() => console.log('Connected to main MongoDB'))
+  .catch(() => console.log('Error occured'));
 
 const Users = mongoose.model('users', userSchema);
 const Exercises = mongoose.model('exercises', exerciseSchema);

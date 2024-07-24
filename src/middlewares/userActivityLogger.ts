@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { IRequest } from '../interfaces/requests/IRequest.js';
-import { logger } from '../logger/logger.js';
+
 import jsonwebtoken from 'jsonwebtoken';
+import logger from '../../api/logger.js';
 
 interface IUserPayload {
   _id: string;
