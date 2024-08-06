@@ -14,6 +14,7 @@ import { checkExerciseOwnership } from '../utils/checkExerciseOwnership.js';
 import { ITopic } from '../interfaces/ITopicSchema.js';
 import { DuplicateError } from '../errors/DuplicateError.js';
 import mongoose from 'mongoose';
+import { log } from 'console';
 
 export const getUserExercises = (
   req: IRequest,

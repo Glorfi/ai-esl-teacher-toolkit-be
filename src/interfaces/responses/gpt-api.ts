@@ -6,6 +6,7 @@ export interface IGptResponse {
   choices: IChoice[];
   usage: IUsage;
   system_fingerprint: any;
+  sentences?: string;
 }
 
 export interface IChoice {
